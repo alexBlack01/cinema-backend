@@ -1,0 +1,752 @@
+openapi: 3.0.3
+info:
+  title: Cinema Api
+  version: 1.0.0
+
+servers:
+  - url: '/api'
+
+tags:
+  - name: Auth
+    description: "Регистрация и получение токена"
+  - name: Movie
+    description: "Информация о киноновинках"
+  - name: Tags
+    description: "Информация о тегах"
+  - name: Episodes
+    description: "Информация о эпизодах"
+  - name: Profile
+    description: "Информация о профиле пользователя"
+
+paths:
+  /movies:
+    get:
+      tags:
+        - Movie
+      summary: "Получить список фильмов."
+      description: "Список фильмов для отображения на Главном экране. \n- new - Новое\n- inTrend - В тренде\n- forMe - Для вас\n- lastView - Вы смотрели\n- compilation - Подборка\n"
+      parameters:
+        - name: filter
+          in: query
+          description: "Фильтр для запроса"
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            default: new
+            enum:
+              - new
+              - inTrend
+              - forMe
+              - lastView
+              - compilation
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/GetMoviesValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /movies/{movieId}/episodes:
+    get:
+      tags:
+        - Movie
+      summary: "Получить список эпизодов."
+      description: "Для многосерийных фильмов запрос возвращает массив серий. Для фильмов/мультфильмов - сам фильм/мультфильм."
+      parameters:
+        - name: movieId
+          in: path
+          description: "Id фильма/сериала"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Episode'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/MovieValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /tags:
+    get:
+      tags:
+        - Tags
+      summary: "Список всех тегов"
+      description: "Получить список тегов"
+      responses:
+        200:
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/episodes/{episodeId}/comments:
+    get:
+      tags:
+        - Episodes
+      summary: "Получить список комментариев к эпизоду."
+      description: "Получить список комментариев к эпизоду по его id."
+      parameters:
+        - name: episodeId
+          in: path
+          description: "Id эпизода"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/EpisodeValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Episodes
+      summary: "Добавить комментарий."
+      description: "Добавить комментарий к эпизоду."
+      parameters:
+        - name: episodeId
+          in: path
+          description: "Id эпизода"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        $ref: '#/components/requestBodies/CommentForm'
+      responses:
+        200:
+          description: "Successful saving of information"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          $ref: '#/components/responses/SaveInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/EpisodeValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: "Регистрация"
+      requestBody:
+        description: "Данные для регистрации пользователя"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationBody'
+        required: true
+      responses:
+        200:
+          description: "Successful registration"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenPair'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        422:
+          $ref: '#/components/responses/RegisterValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      security: [ ]
+
+  /v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: "Аутентификация в системе"
+      requestBody:
+        description: "Данные для получения доступа к системе"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCredential'
+        required: true
+      responses:
+        200:
+          description: "Successful login"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenPair'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        422:
+          $ref: '#/components/responses/LoginValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      security: [ ]
+
+  /v1/auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: "Обноваление токена доступа с помощью токена обновления"
+      requestBody:
+        description: "Данные для обновления токена"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshToken'
+      responses:
+        200:
+          description: "Auth tokens"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenPair'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        422:
+          $ref: '#/components/responses/RefreshTokenValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+
+  /v1/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: "Выход из системы"
+      responses:
+        204:
+          description: "Successful logout"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/profile:
+    get:
+      tags:
+        - Profile
+      summary: "Получить информацию о пользователе"
+      responses:
+        200:
+          description: "User data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+
+    RefreshToken:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      required:
+        - refreshToken
+
+    RegistrationBody:
+      type: object
+      properties:
+        email:
+          type: string
+          description: "Email пользователя"
+          example: Vasya@mail.com
+        password:
+          type: string
+          description: "Пароль для входа"
+          example: qwerty
+        firstName:
+          type: string
+          description: "Имя пользователя"
+          example: John
+        lastName:
+          type: string
+          description: "Фамилия пользователя"
+          example: Johnson
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
+
+    AuthCredential:
+      type: object
+      properties:
+        email:
+          type: string
+          description: "Email пользователя"
+          format: string
+          example: vasya@mail.com
+        password:
+          type: string
+          description: "Пароль пользователя"
+          format: password
+          example: qwerty
+      required:
+        - email
+        - password
+
+    Tag:
+      type: object
+      properties:
+        tagId:
+          type: string
+          format: uuid
+        tagName:
+          type: string
+          example: Комедия
+        categoryName:
+          type: string
+          example: Жанры
+      required:
+        - tagId
+        - tagName
+        - categoryName
+
+    Movie:
+      type: object
+      properties:
+        movieId:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: The Magicians
+        description:
+          type: string
+          example: 5 сезонов
+        age:
+          type: string
+          enum:
+            - 0+
+            - 6+
+            - 12+
+            - 16+
+            - 18+
+        images:
+          type: array
+          items:
+            type: string
+        poster:
+          type: string
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      xml:
+        name: Movie
+      required:
+        - movieId
+        - name
+        - description
+        - age
+        - poster
+        - tags
+        - images
+
+    Episode:
+      type: object
+      properties:
+        episodeId:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Escape From The Happy Place
+        description:
+          type: string
+          example: 'Eliot is in his happy place, unaware that he is being possessed by the Monster. To have control over his body, Eliot must travel to the place that contains his greatest regret: turning down Quentin when he suggests he and Eliot should be together after their memories are restored of their life in past-Fillory, happily living together and raising a family.'
+        director:
+          type: string
+          example: Meera Menon
+        stars:
+          type: array
+          items:
+            type: string
+            example: Jason Ralph
+        year:
+          type: string
+          example: "2019"
+        images:
+          type: array
+          items:
+            type: string
+        runtime:
+          type: integer
+          description: Продолжительность эпизода в секундах
+          example: 2640
+        preview:
+          type: string
+        filePath:
+          type: string
+      required:
+        - episodeId
+        - description
+        - director
+        - stars
+        - year
+        - runtime
+        - preview
+        - filePath
+        - images
+        - name
+
+    Comment:
+      type: object
+      properties:
+        commentId:
+          type: string
+          format: uuid
+        creationDateTime:
+          type: string
+          description: "Дата и время добавления комментария в формате YYYY-MM-DD hh:mm"
+          format: date
+        authorName:
+          type: string
+          example: John Johnson
+        authorAvatar:
+          type: string
+          format: url
+        text:
+          type: string
+          example: Отличная серия, возможно, лучшая в этом сезоне.
+      required:
+        - commentId
+        - creationDateTime
+        - authorName
+        - text
+
+    CommentForm:
+      type: object
+      properties:
+        text:
+          type: string
+          example: Отличная серия, возможно, лучшая в этом сезоне.
+      required:
+        - text
+
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Johnson
+        email:
+          type: string
+          example: john@gmail.com
+        avatar:
+          type: string
+          format: url
+      xml:
+        name: User
+      required:
+        - userId
+        - firstName
+        - lastName
+        - email
+
+    AuthTokenPair:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        accessTokenExpiresIn:
+          type: integer
+          description: "Время валидности токена"
+        refreshToken:
+          type: string
+        refreshTokenExpiresIn:
+          type: integer
+          description: "Время валидности токена"
+      required:
+        - accessToken
+        - accessTokenExpiresIn
+        - refreshToken
+        - refreshTokenExpiresIn
+
+  responses:
+    InternalServerError:
+      description: 'Internal Server Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 'InternalServerError'
+            message: 'Something went wrong'
+
+    GetMoviesValidationError:
+      description: 'Validation Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            WrongFilterValue:
+              value:
+                code: 'WrongFilterValue'
+                message: 'Invalid filter value'
+
+    UnauthorizedError:
+      description: "Unauthorized Error"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            UnauthorizedError:
+              value:
+                code: 'UnauthorizedError'
+            RefreshTokenNotFoundError:
+              value:
+                code: 'RefreshTokenNotFoundError'
+            UserNotFoundError:
+              value:
+                code: 'UserNotFoundError'
+            RefreshTokenExpiredError:
+              value:
+                code: 'RefreshTokenExpiredError'
+    NotFound:
+      description: "Not Found"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequestError:
+              value:
+                code: 'NotFound'
+
+    BadRequestError:
+      description: "Bad Request Error"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequestError:
+              value:
+                code: 'BadRequestError'
+
+    ForbiddenError:
+      description: "Forbidden Error"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            ForbiddenError:
+              value:
+                code: 'ForbiddenError'
+
+    MovieValidationError:
+      description: 'Validation Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            WrongMovieId:
+              value:
+                code: 'WrongMovieId'
+                message: 'Invalid movie id'
+
+    EpisodeValidationError:
+      description: 'Validation Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            WrongEpisodeId:
+              value:
+                code: 'WrongEpisodeId'
+                message: 'Invalid episode id'
+
+    RegisterValidationError:
+      description: 'Register Validation Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            WrongEmail:
+              value:
+                code: 'EmailValidationError'
+                message: 'Wrong email'
+            WrongPassword:
+              value:
+                code: 'PasswordValidationError'
+                message: 'Wrong password'
+            WrongFirstName:
+              value:
+                code: 'FirstNameValidationError'
+                message: 'Wrong first name'
+            WrongLastName:
+              value:
+                code: 'LastNameValidationError'
+                message: 'Wrong last name'
+
+    LoginValidationError:
+      description: "Login Validation Error"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            LoginValidationError:
+              value:
+                code: 'LoginValidationError'
+
+    RefreshTokenValidationError:
+      description: 'Validation error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            RefreshTokenValidationError:
+              value:
+                code: 'RefreshTokenValidationError'
+                message: 'Invalid token'
+
+    SaveInfoBadRequestError:
+      description: "Bad Request"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequestError:
+              value:
+                code: 'WrongData'
+                message: 'Problem with save'
+
+  requestBodies:
+    UserForm:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserForm'
+
+    CommentForm:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommentForm'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: |-
+        Для доступа к API с валидным JWT токеном небходимо для каждого защищенного узла отправлять токен доступа в заголовке Authorization.
+
+        Правильный и валидный JWT токен генерируется по API и возвращается после выполнения запроса /api/auth/refresh на получение токена доступа к API.
+
+        Когда токен доступа протухнет, то для получения нового необходимо сгенерировать еще один.
+
+        При протухании токена обновления необходимо разлогинить пользователя.
+
+        Например,
+
+        Authorization: Bearer <здесь ваш JWT токен>
+      scheme: bearer
+      bearerFormat: JWT

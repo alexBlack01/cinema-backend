@@ -1,0 +1,163 @@
+[versions]
+
+# Java
+java = "11"
+java-enum = "VERSION_11"
+
+# Kotlin
+kotlin = "1.7.10"
+kotlin-dsl = "2.4.1"
+kotlin-lang = "1.7"
+kotlinx-serialization-json = "1.3.3"
+coroutines = "1.6.2"
+
+# Detekt
+detekt = "1.21.0"
+
+# Ktor
+ktor-server = "2.1.0"
+ktor-prometheus = "1.9.2"
+
+# Konform
+konform = "0.4.0"
+
+# Swagger
+swagger = "0.4.5"
+
+# Koin
+koin = "3.2.0"
+
+# Logback
+logback = "1.2.11"
+
+# Exposed
+exposed = "0.39.2"
+
+# Hikari
+hikari = "5.0.1"
+
+# Flyway
+flyway = "9.0.1"
+
+# Postgree
+postgree = "42.4.0"
+
+# Guava
+guava = "31.1-jre"
+
+# Email
+email = "1.5"
+
+# BuildConfig
+build-config = "3.1.0"
+
+# Docker
+docker-java = "7.4.0"
+
+[libraries]
+
+# Kotlin
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
+# Detekt
+detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+
+# Ktor Server
+ktor-server-host = { module = "io.ktor:ktor-server-host-common", version.ref = "ktor-server" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor-server" }
+ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref = "ktor-server" }
+ktor-server-content-negotation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor-server" }
+ktor-server-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-server" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor-server" }
+ktor-server-default-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor-server" }
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor-server" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor-server" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor-server" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor-server" }
+ktor-server-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktor-server" }
+ktor-server-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "ktor-prometheus" }
+
+# Konform
+konform = { module = "io.konform:konform-jvm", version.ref = "konform" }
+
+# Koin
+koin = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
+
+# Logback
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+# Swagger
+swagger = { module = "dev.forst:ktor-openapi-generator", version.ref = "swagger" }
+
+# Exposed
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
+
+# Flyway
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-pluging = { module = "gradle.plugin.org.flywaydb:gradle-plugin-publishing", version.ref = "flyway" }
+
+# Hikari
+hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
+
+# Postgree
+postgree-connector = { module = "org.postgresql:postgresql", version.ref = "postgree" }
+
+# Guava
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+
+# Email
+email = { module = "org.apache.commons:commons-email", version.ref = "email" }
+
+# BuildConfig
+build-config-pluging = { module = "com.github.gmazzo:gradle-buildconfig-plugin", version.ref = "build-config" }
+
+# Docker
+docker-java-plugin = { module = "com.bmuschko:gradle-docker-plugin", version.ref = "docker-java" }
+
+[bundles]
+
+ktor-server = [
+    "ktor-server-host",
+    "ktor-server-netty",
+    "ktor-server-resources",
+    "ktor-server-content-negotation",
+    "ktor-server-serialization-json",
+    "ktor-server-cors",
+    "ktor-server-default-headers",
+    "ktor-server-call-logging",
+    "ktor-server-status-pages",
+    "ktor-server-auth",
+    "ktor-server-auth-jwt",
+    "ktor-server-micrometer",
+    "ktor-server-prometheus"
+]
+
+exposed = [
+    "exposed-dao",
+    "exposed-jdbc",
+    "exposed-java-time"
+]
+
+[plugins]
+
+kotlin-gradle-plugin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlin-dsl" }
+
+build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "build-config" }
+docker-java = { id = "com.bmuschko.docker-java-application", version.ref = "docker-java" }
+flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
+
+# Detekt
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+cinema-build = { id = "ru.cinema.plugin.CinemaBuildPlugin" }

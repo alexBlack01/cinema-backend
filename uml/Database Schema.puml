@@ -1,0 +1,76 @@
+@startuml
+'https://plantuml.com/object-diagram
+
+object User {
+    firstName
+    lastName
+    email
+    avatar
+}
+
+object Movie {
+    name
+    description
+    age
+    poster
+}
+
+object Image {
+    url
+}
+
+object Episode {
+    name
+    description
+    director
+    year
+    runtime
+    preview
+    filePath
+}
+
+object Comment {
+    creationDateTime
+    authorName
+    authorAvatar
+    text
+}
+
+object Tag {
+    tagName
+    categoryName
+}
+
+object Collection {
+    name
+}
+
+object Chat {
+    chatName
+}
+
+object Message {
+    creationDateTime
+    authorName
+    authorAvatar
+    text
+}
+
+object Star {
+    name
+}
+
+User *-- Collection
+User *-- Chat
+Chat *-- Message
+Movie *-- Episode
+Movie o-- Image
+Movie -- Tag
+Episode *-- Comment
+Collection o-- Movie
+Episode -- Star
+Episode o-- Image
+User <-- Comment
+User <-- Message
+
+@enduml
