@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="16" />
+    <bytecodeTargetLevel target="16">
+      <module name="cinema-backend.app.main" target="11" />
+      <module name="cinema-backend.app.test" target="11" />
+      <module name="cinema-backend.data.main" target="11" />
+      <module name="cinema-backend.data.test" target="11" />
+      <module name="cinema-backend.domain.main" target="11" />
+      <module name="cinema-backend.domain.test" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
