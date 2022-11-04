@@ -15,3 +15,7 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
 }
+
+tasks.create("stage") {
+    dependsOn("installDist")
+}
