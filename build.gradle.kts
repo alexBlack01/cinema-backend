@@ -65,4 +65,6 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = libs.versions.java.asProvider().get()
 }
 
-tasks.create("stage").dependsOn("installDist")
+tasks.create("stage") {
+    dependsOn("installDist")
+}
