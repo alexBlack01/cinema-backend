@@ -26,8 +26,7 @@ class RegisterViaEmailUseCaseImpl(
 
         userDbDataSource.addUserRole(user.id, UserRole.USER)
         val tokenPair = authTokenManager.generateNewTokenPair(
-            userId = user.id.toString(),
-            userRoles = listOf(UserRole.USER)
+            userId = user.id.toString()
         )
         authTokenDbDataSource.addRefreshToken(userId = user.id, refreshTokenInfo = tokenPair.refreshTokenInfo)
         return successResult(tokenPair)
