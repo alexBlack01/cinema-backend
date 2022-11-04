@@ -33,6 +33,10 @@ class AuthTokenDbDataSourceImpl(
         AuthTokenTable.deleteWhere { (AuthTokenTable.refreshToken eq token) and (AuthTokenTable.userId eq userId) }
     }
 
+    override suspend fun deleteTokensByTime(time: Long) = dbQueryWithoutResult {
+        AuthTokenTable.deleteWhere { AuthTokenTable.refreshTokenExpiresIn less time }
+    }
+
     override suspend fun getRefreshTokensByUserId(userId: UUID): List<AuthTokenInfo> = dbQuery {
         AuthTokenEntity.find { AuthTokenTable.userId eq userId }.map { it.toDomain() }
     }

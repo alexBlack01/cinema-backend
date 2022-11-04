@@ -9,20 +9,20 @@ import java.util.*
 @Serializable
 data class UserResponse(
     @Contextual
-    val id: UUID,
-    val email: String,
+    val userId: UUID,
     val firstName: String,
     val lastName: String,
+    val email: String,
     val avatar: String?
 ) {
 
     companion object {
-        fun fromDomain(data: UserProfile, baseUrl: String) = UserResponse(
-            id = data.id,
+        fun fromDomain(data: UserProfile, baseUrl: String, uploadFolder: String, folderUrl: String) = UserResponse(
+            userId = data.id,
             email = data.email,
             firstName = data.firstName,
             lastName = data.lastName,
-            avatar = data.avatar?.toResourceUrl(baseUrl)
+            avatar = data.avatar?.toResourceUrl(baseUrl, uploadFolder, folderUrl)
         )
     }
 }

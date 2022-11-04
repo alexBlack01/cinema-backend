@@ -4,6 +4,7 @@ import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
+import ru.cinema.domain.image.model.Image
 import java.util.*
 
 object AvatarTable : UUIDTable(name = "avatars") {
@@ -12,6 +13,11 @@ object AvatarTable : UUIDTable(name = "avatars") {
 
 class AvatarEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     var url by AvatarTable.url
+
+    fun toDomain() = Image(
+        id = id.value,
+        url = url
+    )
 
     companion object : UUIDEntityClass<AvatarEntity>(AvatarTable)
 }

@@ -6,6 +6,8 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import ru.cinema.data.db.movie.model.MovieEntity
 import ru.cinema.data.db.tagmovie.model.TagMovieTable
+import ru.cinema.data.db.user.model.UserEntity
+import ru.cinema.data.db.usertag.model.UserTagTable
 import ru.cinema.domain.tag.model.Tag
 import java.util.*
 
@@ -19,6 +21,7 @@ class TagEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     var categoryName by TagTable.categoryName
 
     val movies by MovieEntity via TagMovieTable
+    val users by UserEntity via UserTagTable
 
     fun toDomain() = Tag(
         id = id.value,

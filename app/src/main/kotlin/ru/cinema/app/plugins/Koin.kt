@@ -1,12 +1,11 @@
 package ru.cinema.app.plugins
 
 import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import org.koin.ktor.plugin.Koin
-import ru.cinema.app.di.KoinModules.appModules
+import org.koin.ktor.plugin.koin
+import ru.cinema.app.di.KoinModules
 
 fun Application.configureKoin() {
-    install(Koin) {
-        modules(appModules)
+    koin {
+        modules(KoinModules.all)
     }
 }

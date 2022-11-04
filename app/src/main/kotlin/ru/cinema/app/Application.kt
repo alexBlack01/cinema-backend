@@ -7,10 +7,13 @@ import ru.cinema.app.plugins.configureHTTP
 import ru.cinema.app.plugins.configureKoin
 import ru.cinema.app.plugins.configureMonitoring
 import ru.cinema.app.plugins.configureRouting
+import ru.cinema.app.plugins.configureScheduledJobs
+import ru.cinema.app.plugins.configureSecurity
 import ru.cinema.app.plugins.configureSerialization
 import ru.cinema.app.plugins.configureStatic
 import ru.cinema.app.plugins.configureStatusPages
 import ru.cinema.app.plugins.configureSwagger
+import ru.cinema.app.plugins.configureWebSockets
 
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 
@@ -19,6 +22,8 @@ fun Application.appModule() {
     configureMonitoring()
     configureKoin()
     configureHTTP()
+    configureWebSockets()
+    configureSecurity()
     configureRouting()
     configureFlyway()
     configureStatic()
@@ -26,4 +31,5 @@ fun Application.appModule() {
     configureSerialization()
     configureStatusPages()
     configureAuth()
+    configureScheduledJobs()
 }

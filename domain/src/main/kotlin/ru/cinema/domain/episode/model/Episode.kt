@@ -11,6 +11,6 @@ data class Episode(
     val year: Int,
     val imageUrls: List<String>,
     val runtime: Int,
-    val preview: String,
-    val filePath: String
+    val preview: String?,
+    val filePath: String?
 )

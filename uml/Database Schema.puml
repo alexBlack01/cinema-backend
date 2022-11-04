@@ -19,6 +19,14 @@ object Image {
     url
 }
 
+object EpisodeImage {
+    url
+}
+
+object Avatar {
+    url
+}
+
 object Episode {
     name
     description
@@ -61,7 +69,7 @@ object Star {
 }
 
 User *-- Collection
-User *-- Chat
+User -- Chat
 Chat *-- Message
 Movie *-- Episode
 Movie o-- Image
@@ -69,8 +77,9 @@ Movie -- Tag
 Episode *-- Comment
 Collection o-- Movie
 Episode -- Star
-Episode o-- Image
+Episode *-- EpisodeImage
 User <-- Comment
 User <-- Message
+User *-- Avatar
 
 @enduml

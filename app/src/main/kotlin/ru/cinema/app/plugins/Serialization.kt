@@ -9,7 +9,6 @@ import kotlinx.serialization.modules.SerializersModule
 import ru.cinema.api.common.serializations.LocalDateTimeSerializer
 import ru.cinema.api.common.serializations.UUIDSerializer
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun Application.configureSerialization() {
@@ -21,7 +20,7 @@ fun Application.configureSerialization() {
                 prettyPrint = true
                 serializersModule = SerializersModule {
                     contextual(UUID::class, UUIDSerializer)
-                    contextual(LocalDateTime::class, LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                    contextual(LocalDateTime::class, LocalDateTimeSerializer())
                 }
             }
         )

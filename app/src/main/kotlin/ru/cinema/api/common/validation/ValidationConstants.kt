@@ -8,4 +8,9 @@ object ValidationConstants {
         "\\." +
         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
         ")+"
+
+    // image size in Bytes
+    const val MAX_IMAGE_SIZE = 5 * 1024 * 1024
+
+    const val MAX_VIDEO_SIZE = 1024 * 1024 * 1024
 }

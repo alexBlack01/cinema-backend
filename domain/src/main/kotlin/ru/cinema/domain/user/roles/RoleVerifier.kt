@@ -7,12 +7,20 @@ import java.util.*
 
 interface RoleVerifier {
     suspend fun checkNecessaryRolesAndThrow(userId: UUID, necessaryRoles: Set<UserRole>)
+
+    suspend fun checkNecessaryRolesByEmail(email: String, necessaryRoles: Set<UserRole>)
 }
 class RoleVerifierImpl(
     private val userDbDataSource: UserDbDataSource
 ) : RoleVerifier {
     override suspend fun checkNecessaryRolesAndThrow(userId: UUID, necessaryRoles: Set<UserRole>) {
         if (!userDbDataSource.hasNecessaryRoles(userId, necessaryRoles)) {
+            throw NoNecessaryRole()
+        }
+    }
+
+    override suspend fun checkNecessaryRolesByEmail(email: String, necessaryRoles: Set<UserRole>) {
+        if (!userDbDataSource.hasNecessaryRolesByEmail(email, necessaryRoles)) {
             throw NoNecessaryRole()
         }
     }

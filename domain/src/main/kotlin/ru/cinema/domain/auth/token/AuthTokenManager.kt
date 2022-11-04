@@ -1,7 +1,6 @@
 package ru.cinema.domain.auth.token
 
 import ru.cinema.domain.auth.token.model.AuthTokenPair
-import ru.cinema.domain.user.roles.model.UserRole
 
 interface AuthTokenManager {
     /**
@@ -17,5 +16,5 @@ interface AuthTokenManager {
      * @param userId is ID of the user for whom the token is generated
      * @return Information about tokens with their lifetimes - [AuthTokenPair]
      */
-    fun generateNewTokenPair(userId: String, userRoles: List<UserRole>): AuthTokenPair
+    fun generateNewTokenPair(userId: String): AuthTokenPair
 }

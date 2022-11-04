@@ -15,5 +15,5 @@ class Movies(
 )
 
 @Serializable
-@Resource("movies/{movieId}/episodes")
-class Episodes(@Serializable(with = UUIDSerializer::class) val movieId: UUID)
+@Resource("movies/{movieId}/dislike")
+class Dislike(@Serializable(with = UUIDSerializer::class) val movieId: UUID)

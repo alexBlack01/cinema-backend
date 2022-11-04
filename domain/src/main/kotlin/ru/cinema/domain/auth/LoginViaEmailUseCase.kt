@@ -22,11 +22,7 @@ class LoginViaEmailUseCaseImpl(
         val hashPassword = HashUtil.hash(param.password)
         if (hashPassword != user.password) throw InvalidUserCredentials()
 
-        val userRoles = userDbDataSource.getUserRoles(userId = user.id)
-        val tokenPair = authTokenManager.generateNewTokenPair(
-            userId = user.id.toString(),
-            userRoles = userRoles.toList()
-        )
+        val tokenPair = authTokenManager.generateNewTokenPair(userId = user.id.toString())
         authTokenDbDataSource.addRefreshToken(userId = user.id, refreshTokenInfo = tokenPair.refreshTokenInfo)
         return successResult(tokenPair)
     }

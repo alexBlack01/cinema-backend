@@ -12,9 +12,5 @@ class Register
 class Login
 
 @Serializable
-@Resource("auth/logout")
-class Logout
-
-@Serializable
 @Resource("auth/refresh")
 class RefreshToken

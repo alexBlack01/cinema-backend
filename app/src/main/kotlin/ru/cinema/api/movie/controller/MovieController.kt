@@ -1,11 +1,17 @@
 package ru.cinema.api.movie.controller
 
-import ru.cinema.domain.episode.model.Episode
+import io.ktor.http.content.MultiPartData
+import ru.cinema.api.movie.model.MovieBody
+import ru.cinema.api.movie.model.MovieEditBody
 import ru.cinema.domain.movie.model.Movie
 import ru.cinema.domain.movie.model.MovieType
 import java.util.UUID
 
 interface MovieController {
-    suspend fun getAllMovies(movieType: MovieType): List<Movie>
-    suspend fun getEpisodesByMovie(movieId: UUID): List<Episode>
+    suspend fun getAllMovies(userId: UUID, movieType: MovieType): List<Movie>
+    suspend fun postNewMovie(movieData: MovieBody): Movie
+    suspend fun insertImagesForMovie(movieId: UUID, images: MultiPartData)
+    suspend fun patchMovieById(movieId: UUID, editMovieBody: MovieEditBody): Movie
+    suspend fun deleteMovieById(movieId: UUID)
+    suspend fun postDislikeByUser(userId: UUID, movieId: UUID)
 }

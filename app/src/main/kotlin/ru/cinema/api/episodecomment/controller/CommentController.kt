@@ -8,4 +8,6 @@ interface CommentController {
     suspend fun getCommentsByEpisode(episodeId: UUID): List<Comment>
 
     suspend fun postCommentByEpisode(commentForm: CommentFormBody): Comment
+
+    suspend fun deleteCommentByAdmin(episodeId: UUID, commentId: UUID)
 }

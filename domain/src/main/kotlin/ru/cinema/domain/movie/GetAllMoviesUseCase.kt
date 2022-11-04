@@ -3,20 +3,24 @@ package ru.cinema.domain.movie
 import ru.cinema.domain.common.usecase.UseCase
 import ru.cinema.domain.movie.model.Movie
 import ru.cinema.domain.movie.model.MovieType
+import java.util.UUID
 
-interface GetAllMoviesUseCase : UseCase<MovieType, List<Movie>>
+interface GetAllMoviesUseCase : UseCase<Pair<UUID, MovieType>, List<Movie>>
 
 class GetAllMoviesUseCaseImpl(
     private val movieDataSource: MovieDbDataSource
 ) : GetAllMoviesUseCase {
-
-    override suspend fun execute(param: MovieType): Result<List<Movie>> {
-        return when (param) {
-            MovieType.NEW -> successResult(movieDataSource.getNewMovies())
-            MovieType.FOR_ME -> successResult(movieDataSource.getPersonalMovies())
-            MovieType.COMPILATION -> successResult(movieDataSource.getCompilationMovies())
-            MovieType.IN_TREND -> successResult(movieDataSource.getTrendMovies())
-            MovieType.LAST_VIEW -> successResult(movieDataSource.getLastViewMovies())
+    /**
+     * @param param.first is user id
+     * @param param.second is movie type
+     */
+    override suspend fun execute(param: Pair<UUID, MovieType>): Result<List<Movie>> {
+        return when (param.second) {
+            MovieType.NEW -> successResult(movieDataSource.getNewMovies(param.first))
+            MovieType.FOR_ME -> successResult(movieDataSource.getPersonalMovies(param.first))
+            MovieType.COMPILATION -> successResult(movieDataSource.getCompilationMovies(param.first))
+            MovieType.IN_TREND -> successResult(movieDataSource.getTrendMovies(param.first))
+            MovieType.LAST_VIEW -> successResult(movieDataSource.getLastViewMovies(param.first))
         }
     }
 }

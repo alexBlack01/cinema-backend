@@ -10,5 +10,6 @@ interface AuthTokenDbDataSource {
     suspend fun getUserByRefreshToken(token: String): User?
     suspend fun addRefreshToken(userId: UUID, refreshTokenInfo: AuthTokenInfo)
     suspend fun deleteTokenForUser(token: String, userId: UUID)
+    suspend fun deleteTokensByTime(time: Long)
     suspend fun logoutUser(userId: UUID)
 }

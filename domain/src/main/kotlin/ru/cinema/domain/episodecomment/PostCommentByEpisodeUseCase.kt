@@ -14,10 +14,15 @@ class PostCommentByEpisodeUseCaseImpl(
     override suspend fun execute(param: CommentForm): Result<Comment> {
         val user = userDbDataSource.getUserById(param.userId) ?: throw InvalidUserCredentials()
 
+        val comment = commentDbDataSource.postCommentByEpisode(param)
+
         return successResult(
-            commentDbDataSource.postCommentByEpisode(
-                commentForm = param,
-                authorData = user.firstName to user.lastName
+            Comment(
+                commentId = comment.commentId,
+                creationDateTime = comment.creationDateTime,
+                authorName = "${user.lastName} ${user.lastName}",
+                authorAvatar = user.avatar.orEmpty(),
+                text = comment.text
             )
         )
     }

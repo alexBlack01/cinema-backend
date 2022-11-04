@@ -6,19 +6,54 @@ info:
 servers:
   - url: '/api'
 
+security:
+  - bearerAuth: []
+
 tags:
   - name: Auth
     description: "Регистрация и получение токена"
+  - name: Cover
+    description: "Обложка для приложения"
   - name: Movie
     description: "Информация о киноновинках"
+  - name: Collections
+    description: "Информация о коллекциях пользователя"
   - name: Tags
     description: "Информация о тегах"
   - name: Episodes
     description: "Информация о эпизодах"
+  - name: Chats
+    description: "Информация о чатах"
+  - name: History
+    description: "Информация об истории"
+  - name: Preferences
+    description: "Информация о предпочтениях"
   - name: Profile
     description: "Информация о профиле пользователя"
 
 paths:
+  /v1/cover:
+    get:
+      tags:
+        - Cover
+      summary: "Получить информацию о фильме для обложки."
+      description: "Изображения для Главного экрана приложения. ForegroundImage должен располагаться по центру."
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoverMovie'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /movies:
     get:
       tags:
@@ -99,6 +134,36 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v1/movies/{movieId}/dislike:
+    post:
+      tags:
+        - Movie
+      summary: "Убрать фильм из подборки."
+      description: "Поставить dislike фильму и убрать его из подборки."
+      parameters:
+        - name: movieId
+          in: path
+          description: "Id фильма"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        204:
+          description: "Successful saving of information"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/MovieValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /tags:
     get:
       tags:
@@ -123,7 +188,31 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/episodes/{episodeId}/comments:
+  /v1/history:
+    get:
+      tags:
+        - History
+      summary: "История просмотров пользователя."
+      description: "Получить историю просмотров."
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EpisodeView'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /episodes/{episodeId}/comments:
     get:
       tags:
         - Episodes
@@ -195,7 +284,78 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/auth/register:
+  /v1/episodes/{episodeId}/time:
+    get:
+      tags:
+        - Episodes
+      summary: "Получить текущую позицию."
+      description: "Получить текущую позицию по id эпизода."
+      parameters:
+        - name: episodeId
+          in: path
+          description: "Id эпизода"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpisodeTime'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/EpisodeValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Episodes
+      summary: "Сохранить текущую позицию эпизода."
+      description: "Сохранить позицию, с которой начнется воспроизведение при возврате к эпизоду."
+      parameters:
+        - name: episodeId
+          in: path
+          description: "Id эпизода"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: "Текущая временная позиция в секундах"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EpisodeTime'
+        required: true
+      responses:
+        204:
+          description: "Successful saving of information"
+        400:
+          $ref: '#/components/responses/SaveInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/EpisodeValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/register:
     post:
       tags:
         - Auth
@@ -222,7 +382,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
       security: [ ]
 
-  /v1/auth/login:
+  /auth/login:
     post:
       tags:
         - Auth
@@ -249,7 +409,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
       security: [ ]
 
-  /v1/auth/refresh:
+  /auth/refresh:
     post:
       tags:
         - Auth
@@ -277,10 +437,8 @@ paths:
           $ref: '#/components/responses/RefreshTokenValidationError'
         500:
           $ref: '#/components/responses/InternalServerError'
-      security:
-        - bearerAuth: [ ]
 
-  /v1/auth/logout:
+  /auth/logout:
     post:
       tags:
         - Auth
@@ -295,7 +453,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/profile:
+  /profile:
     get:
       tags:
         - Profile
@@ -313,6 +471,398 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         404:
           $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - Profile
+      summary: "Редактирование данных пользователя"
+      requestBody:
+        description: "Новые данные о пользователе"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserForm'
+      responses:
+        200:
+          description: "Changes saved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/SaveInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/PatchUserValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /profile/avatar:
+    post:
+      tags:
+        - Profile
+      summary: "Загрузка фотографии"
+      description: "Данный запрос принимает только изображения формата .png и .jpg/.jpeg. Пустые изображения и невалидные изображения не разрешены."
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/user_avatar_body'
+            encoding:
+              file:
+                contentType: image/png, image/jpeg, image/jpg
+                style: form
+      responses:
+        201:
+          description: "Photo uploaded successfully"
+        400:
+          $ref: '#/components/responses/SaveInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /chats:
+    get:
+      tags:
+        - Chats
+      summary: "Список чатов, в которых участвует данный пользователь."
+      description: "Получить список чатов."
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chat'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /chats/{chatId}/messages:
+    get:
+      tags:
+        - Chats
+      summary: "Список сообщений чата."
+      description: "Получить список сообщений."
+      parameters:
+        - name: chatId
+          in: path
+          description: Id чата
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/ChatValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Chats
+      summary: "Отправить сообщение."
+      description: "Отправить сообщение в чат."
+      parameters:
+        - name: chatId
+          in: path
+          description: Id чата
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        $ref: '#/components/requestBodies/MessageForm'
+      responses:
+        200:
+          description: "Successful saving of information"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        400:
+          $ref: '#/components/responses/SaveInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/ChatValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/collections:
+    get:
+      tags:
+        - Collections
+      summary: "Список коллекций данного пользователя."
+      description: "Получить список коллекций."
+      responses:
+        200:
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollectionListItem'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Collections
+      summary: "Создать коллекцию."
+      description: "Создать коллекцию."
+      requestBody:
+        $ref: '#/components/requestBodies/CollectionForm'
+      responses:
+        200:
+          description: "Successful saving of information"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionListItem'
+        400:
+          $ref: '#/components/responses/SaveInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/PostCollectionValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/collections/{collectionId}:
+    delete:
+      tags:
+        - Collections
+      summary: "Удаление коллекции"
+      parameters:
+        - name: collectionId
+          description: "Id коллекции"
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        204:
+          description: "Collection successfully deleted"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/CollectionValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/collections/{collectionId}/movies:
+    get:
+      tags:
+        - Collections
+      summary: "Получить список фильмов в коллекции"
+      parameters:
+        - name: collectionId
+          in: path
+          description: "Id коллекции"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/CollectionValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Collections
+      summary: "Добавить фильм в коллекцию"
+      parameters:
+        - name: collectionId
+          in: path
+          description: "Id коллекции"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: "Id фильма"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieValue'
+        required: true
+      responses:
+        204:
+          description: "Successful saving of information"
+        400:
+          $ref: '#/components/responses/SaveInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/CollectionValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Collections
+      summary: "Удаление фильма из коллекции"
+      parameters:
+        - name: collectionId
+          in: path
+          description: "Id коллекции"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+        - name: movieId
+          in: query
+          description: "Id фильма"
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        204:
+          description: "Movie successfully deleted"
+        400:
+          $ref: '#/components/responses/DeleteInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/CollectionValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/preferences:
+    get:
+      tags:
+        - Preferences
+      summary: "Получить список предпочтений пользователя."
+      responses:
+        200:
+          description: "List of preferences"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - Preferences
+      summary: "Изменить предпочтения пользователя."
+      description: "Изменить предпочтения пользователя."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Tag'
+      responses:
+        204:
+          description: "Successful saving of information"
+        400:
+          $ref: '#/components/responses/SaveInfoBadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/PutPreferenceValidationError'
         500:
           $ref: '#/components/responses/InternalServerError'
 
@@ -377,6 +927,15 @@ components:
       required:
         - email
         - password
+
+    MovieValue:
+      type: object
+      properties:
+        movieId:
+          type: string
+          format: uuid
+      required:
+        - movieId
 
     Tag:
       type: object
@@ -543,6 +1102,21 @@ components:
         - lastName
         - email
 
+    UserForm:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Johnson
+        password:
+          type: string
+          example: qwerty
+      xml:
+        name: UserForm
+
     AuthTokenPair:
       type: object
       properties:
@@ -561,6 +1135,141 @@ components:
         - accessTokenExpiresIn
         - refreshToken
         - refreshTokenExpiresIn
+
+    Chat:
+      type: object
+      properties:
+        chatId:
+          type: string
+          format: uuid
+        chatName:
+          type: string
+          example: The Magicians
+      required:
+        - chatId
+        - chatName
+
+    Message:
+      type: object
+      properties:
+        messageId:
+          type: string
+          format: uuid
+        creationDateTime:
+          type: string
+          description: Дата и время добавления сообщения в формате YYYY-MM-DD hh:mm
+          format: date
+        authorName:
+          type: string
+          example: John Johnson
+        authorAvatar:
+          type: string
+          format: url
+        text:
+          type: string
+          example: А мне не понравился последний сезон. Позор создателям.
+      required:
+        - messageId
+        - creationDateTime
+        - authorName
+        - text
+
+    MessageForm:
+      type: object
+      properties:
+        text:
+          type: string
+          example: А мне не понравился последний сезон. Позор создателям.
+      required:
+        - text
+
+    EpisodeTime:
+      type: object
+      properties:
+        timeInSeconds:
+          type: integer
+          format: int64
+          description: Текущая позиция в секундах. Если позиция равна длине эпизода - эпизод считается просмотренным полностью.
+          example: 305
+      required:
+        - time
+
+    EpisodeView:
+      type: object
+      properties:
+        episodeId:
+          type: string
+          format: uuid
+        movieId:
+          type: string
+          format: uuid
+        episodeName:
+          type: string
+          example: Escape From The Happy Place
+        movieName:
+          type: string
+          example: The Magicians
+        preview:
+          type: string
+        filePath:
+          type: string
+        time:
+          type: integer
+          description: Текущая позиция в секундах. Если позиция равна длине эпизода - эпизод считается просмотренным полностью.
+          example: 305
+      required:
+        - episodeId
+        - movieId
+        - movieName
+        - preview
+        - filePath
+        - time
+        - episodeName
+
+    CollectionListItem:
+      type: object
+      properties:
+        collectionId:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Посмотреть в самолете
+      required:
+        - collectionId
+        - name
+
+    CollectionForm:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Посмотреть в самолете
+      required:
+        - name
+
+    user_avatar_body:
+      type: object
+      properties:
+        file:
+          type: string
+          description: "Бинарное представление файла"
+          format: binary
+      required:
+        - file
+
+    CoverMovie:
+      type: object
+      properties:
+        backgroundImage:
+          type: string
+        foregroundImage:
+          type: string
+      xml:
+        name: Tag
+      required:
+        - backgroundImage
+        - foregroundImage
 
   responses:
     InternalServerError:
@@ -625,6 +1334,18 @@ components:
             BadRequestError:
               value:
                 code: 'BadRequestError'
+
+    DeleteInfoBadRequestError:
+      description: "Bad Request"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequestError:
+              value:
+                code: 'WrongData'
+                message: 'Problem with delete'
 
     ForbiddenError:
       description: "Forbidden Error"
@@ -720,6 +1441,30 @@ components:
                 code: 'WrongData'
                 message: 'Problem with save'
 
+    CollectionValidationError:
+      description: 'Validation Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            WrongCollectionId:
+              value:
+                code: 'WrongCollectionId'
+                message: 'Invalid collection id'
+
+    PostCollectionValidationError:
+      description: 'Validation Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            WrongBuildingId:
+              value:
+                code: 'PostCollectionValidationError'
+                message: 'Field must not be empty'
+
   requestBodies:
     UserForm:
       content:
@@ -732,6 +1477,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CommentForm'
+
+    CollectionForm:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionForm'
+
+    MessageForm:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageForm'
 
   securitySchemes:
     bearerAuth:

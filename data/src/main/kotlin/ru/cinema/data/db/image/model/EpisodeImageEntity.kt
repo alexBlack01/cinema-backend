@@ -16,6 +16,7 @@ object EpisodeImageTable : UUIDTable(name = "episode_images") {
 
 class EpisodeImageEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     var url by EpisodeImageTable.url
+    var episodeId by EpisodeImageTable.episodeId
 
     var episode by EpisodeEntity referencedOn EpisodeImageTable.episodeId
 

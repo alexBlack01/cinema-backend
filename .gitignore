@@ -113,3 +113,6 @@ gradle-app.setting
 .idea/runConfigurations.xml
 .idea/misc.xml
 .idea/dataSources.xml
+
+# Folders
+uploads

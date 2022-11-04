@@ -28,7 +28,7 @@ fun JWTAuthenticationProvider.Config.getExtendedVerificationChallenge(
 }
 
 private fun processToken(token: String, tokenValidator: TokenValidator, isRefreshRequest: Boolean) = try {
-    tokenValidator.verifier.verify(token)
+    tokenValidator.accessVerifier.verify(token)
     null
 } catch (e: TokenExpiredException) {
     if (isRefreshRequest) null else AccessTokenExpired(message = e.message)

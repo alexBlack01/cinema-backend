@@ -8,3 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Resource("profile")
 class Profile
+
+@Serializable
+@Resource("profile/avatar")
+class PostAvatar

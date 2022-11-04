@@ -14,6 +14,6 @@ class GetEpisodesByMovieUseCaseImpl(
      * @param param is movie id
      */
     override suspend fun execute(param: UUID): Result<List<Episode>> {
-        return successResult(movieDataSource.getEpisodesByMovie(movieId = param))
+        return successResult(movieDataSource.getEpisodesByMovie(param))
     }
 }

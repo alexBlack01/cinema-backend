@@ -17,6 +17,7 @@ object ImageTable : UUIDTable(name = "images") {
 
 class ImageEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     var url by ImageTable.url
+    var movieId by ImageTable.movieId
 
     var movie by MovieEntity referencedOn ImageTable.movieId
 

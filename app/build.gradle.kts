@@ -39,7 +39,6 @@ docker {
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.bundles.ktor.server)
-
     implementation(libs.koin)
     implementation(libs.konform)
     implementation(libs.logback)
