@@ -29,6 +29,10 @@ allprojects {
 
     group = "ru.cinema"
 
+    tasks {
+        create("stage").dependsOn("installDist")
+    }
+
     tasks.withType<JavaCompile> {
         sourceCompatibility = libs.versions.java.asProvider().get()
         targetCompatibility = libs.versions.java.asProvider().get()
