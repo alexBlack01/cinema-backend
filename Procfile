@@ -1,1 +1,0 @@
-web: ./build/install/cinema_backend/bin/cinema_backend
