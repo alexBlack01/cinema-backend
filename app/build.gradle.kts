@@ -64,3 +64,7 @@ tasks.jar {
 tasks.named<Dockerfile>("dockerCreateDockerfile") {
     environmentVariable("APPLICATION_HOST", applicationHost)
 }
+
+tasks {
+    create("stage").dependsOn("installDict")
+}
