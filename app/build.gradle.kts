@@ -66,5 +66,5 @@ tasks.named<Dockerfile>("dockerCreateDockerfile") {
 }
 
 tasks {
-    create("stage").dependsOn("classes")
+    create("stage").dependsOn("installDist")
 }
