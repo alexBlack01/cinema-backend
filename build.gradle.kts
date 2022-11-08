@@ -66,5 +66,5 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
 }
 
 tasks {
-    create("stage").dependsOn("installDist")
+    create("stage").dependsOn("startScripts")
 }
