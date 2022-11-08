@@ -64,3 +64,7 @@ tasks.withType<Detekt>().configureEach {
 tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = libs.versions.java.asProvider().get()
 }
+
+tasks {
+    create("stage").dependsOn("build")
+}
