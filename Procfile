@@ -1,1 +1,1 @@
-web: ./build/install/${rootProject.name}/bin/${rootProject.name}
+web: ./build/install/cinema-backend/bin/cinema-backend

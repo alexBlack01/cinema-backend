@@ -66,5 +66,5 @@ tasks.named<Dockerfile>("dockerCreateDockerfile") {
 }
 
 tasks {
-    create("stage").dependsOn("run")
+    create("stage").dependsOn("classes")
 }
