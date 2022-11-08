@@ -1,1 +1,1 @@
-web: ./build/install/cinema-backend/bin/cinema-backend
+web: ./app/build/install/app/bin/app
