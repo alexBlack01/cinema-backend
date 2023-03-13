@@ -4,5 +4,5 @@ import ru.cinema.domain.image.model.Image
 
 interface AvatarDbDataSource {
 
-    suspend fun addAvatar(avatarUrl: String): Image
+    suspend fun addAvatar(avatarId: String): Image
 }

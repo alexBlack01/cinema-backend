@@ -21,18 +21,14 @@ data class HistoryResponse(
 
     companion object {
         fun fromDomain(
-            data: EpisodeWithTime,
-            baseUrl: String,
-            uploadFolder: String,
-            previewFolder: String,
-            fileFolder: String
+            data: EpisodeWithTime
         ) = HistoryResponse(
             episodeId = data.episodeId,
             movieId = data.movieId,
             episodeName = data.episodeName,
             movieName = data.movieName,
-            preview = data.preview?.toResourceUrl(baseUrl, uploadFolder, previewFolder),
-            filePath = data.filePath?.toResourceUrl(baseUrl, uploadFolder, fileFolder),
+            preview = data.preview?.toResourceUrl(),
+            filePath = data.filePath?.toResourceUrl(),
             time = data.time
         )
     }

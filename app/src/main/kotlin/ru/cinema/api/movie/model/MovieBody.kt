@@ -8,7 +8,6 @@ import ru.cinema.api.common.request.ValidatedBody
 import ru.cinema.api.common.validation.isNotBlank
 import ru.cinema.api.common.validation.isNotEmpty
 import ru.cinema.domain.movie.model.MovieForm
-import java.time.LocalDateTime
 import java.util.UUID
 
 @Serializable
@@ -16,9 +15,7 @@ data class MovieBody(
     val name: String,
     val description: String,
     val age: String,
-    val tags: List<@Contextual UUID>,
-    @Contextual
-    val createdAt: LocalDateTime
+    val tags: List<@Contextual UUID>
 ) : ValidatedBody<MovieBody>() {
     override val validationRule: Validation<MovieBody> = Validation {
         MovieBody::name required {
@@ -42,8 +39,6 @@ data class MovieBody(
         name = name,
         description = description,
         age = age,
-        tags = tags,
-        createdAt = createdAt
-
+        tags = tags
     )
 }

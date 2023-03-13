@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
+    api(libs.uploadcare.client)
     api(libs.kotlinx.serialization.json)
 
     api(libs.hikari)

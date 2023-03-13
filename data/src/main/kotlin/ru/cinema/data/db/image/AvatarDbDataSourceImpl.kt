@@ -10,9 +10,9 @@ class AvatarDbDataSourceImpl(
     override val db: Database
 ) : AvatarDbDataSource, DatabaseDataSource {
 
-    override suspend fun addAvatar(avatarUrl: String): Image = dbQuery {
+    override suspend fun addAvatar(avatarId: String): Image = dbQuery {
         val avatarForm = AvatarEntity.new {
-            this.url = avatarUrl
+            this.url = avatarId
         }
 
         avatarForm.toDomain()

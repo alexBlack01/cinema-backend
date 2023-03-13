@@ -8,7 +8,6 @@ import kotlinx.serialization.json.Json
 import ru.cinema.api.chat.model.MessageResponse
 import ru.cinema.api.chat.websocket.model.ChatSession
 import ru.cinema.api.chat.websocket.model.Member
-import ru.cinema.app.common.utils.SystemEnvVariablesUtil
 import ru.cinema.domain.chat.model.Message
 import ru.cinema.domain.common.error.MemberAlreadyExists
 import java.util.*
@@ -36,30 +35,20 @@ object WebSocketManager {
         )
     }
 
-    suspend fun sendAllMessagesInChat(messages: List<Message>, socket: WebSocketSession, baseUrl: String) {
+    suspend fun sendAllMessagesInChat(messages: List<Message>, socket: WebSocketSession) {
         messages.forEach { message ->
 
-            val messageResponse = MessageResponse.fromDomain(
-                data = message,
-                baseUrl = baseUrl,
-                uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                folderUrl = SystemEnvVariablesUtil.avatarFolder
-            )
+            val messageResponse = MessageResponse.fromDomain(message)
 
             val parsedMessage = Json.encodeToString(messageResponse)
             socket.send(Frame.Text(parsedMessage))
         }
     }
 
-    suspend fun sendMessageToAll(message: Message, chatId: UUID, baseUrl: String) {
+    suspend fun sendMessageToAll(message: Message, chatId: UUID) {
         chatSessions.find { it.chatId == chatId }?.members?.values?.forEach { member ->
 
-            val messageResponse = MessageResponse.fromDomain(
-                data = message,
-                baseUrl = baseUrl,
-                uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                folderUrl = SystemEnvVariablesUtil.avatarFolder
-            )
+            val messageResponse = MessageResponse.fromDomain(message)
 
             val parsedMessage = Json.encodeToString(messageResponse)
             member.socket.send(Frame.Text(parsedMessage))

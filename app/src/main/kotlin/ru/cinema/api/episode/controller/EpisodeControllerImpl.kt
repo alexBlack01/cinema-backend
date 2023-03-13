@@ -4,9 +4,7 @@ import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import ru.cinema.api.common.utils.ContentUtils
-import ru.cinema.api.common.utils.FileUrlUtils
 import ru.cinema.api.common.validation.isValidateImage
-import ru.cinema.api.common.validation.isValidateVideo
 import ru.cinema.api.episode.model.EpisodeBody
 import ru.cinema.api.episode.model.EpisodeEditBody
 import ru.cinema.api.episode.model.request.ContentTypeDto
@@ -19,7 +17,6 @@ import ru.cinema.domain.episode.PostEpisodeByMovieUseCase
 import ru.cinema.domain.episode.PutEpisodeFilesUseCase
 import ru.cinema.domain.episode.model.Episode
 import ru.cinema.domain.episode.model.EpisodeContentForm
-import ru.cinema.domain.episode.model.EpisodeContentType
 import ru.cinema.domain.movie.model.ContentForm
 import java.util.*
 
@@ -42,33 +39,19 @@ class EpisodeControllerImpl(
     override suspend fun insertFilesForEpisode(movieId: UUID, episodeId: UUID, files: MultiPartData) {
         var previewBytes: ContentForm? = null
         val imagesBytes = mutableListOf<ContentForm>()
-        var file: ContentForm? = null
 
         files.forEachPart { part ->
             if (part is PartData.FileItem) {
                 when (part.name?.toValidateEnumType()) {
                     ContentTypeDto.PREVIEW -> {
                         previewBytes =
-                            ContentUtils.createContentForm(
-                                part,
-                                FileUrlUtils.getUrlForEpisodeContent(EpisodeContentType.PREVIEW)
-                            ).apply { isValidateImage() }
+                            ContentUtils.createContentForm(part).apply { isValidateImage() }
                     }
 
                     ContentTypeDto.IMAGES -> {
                         imagesBytes.add(
-                            ContentUtils.createContentForm(
-                                part,
-                                FileUrlUtils.getUrlForEpisodeContent(EpisodeContentType.IMAGES)
-                            ).apply { isValidateImage() }
+                            ContentUtils.createContentForm(part).apply { isValidateImage() }
                         )
-                    }
-
-                    ContentTypeDto.FILE -> {
-                        file = ContentUtils.createContentForm(
-                            part,
-                            FileUrlUtils.getUrlForEpisodeContent(EpisodeContentType.FILE)
-                        ).apply { isValidateVideo() }
                     }
 
                     else -> throw InvalidFileName()
@@ -80,8 +63,7 @@ class EpisodeControllerImpl(
             EpisodeContentForm(
                 episodeId = episodeId,
                 preview = previewBytes,
-                images = imagesBytes,
-                filePath = file
+                images = imagesBytes
             )
         ).getOrThrow()
     }

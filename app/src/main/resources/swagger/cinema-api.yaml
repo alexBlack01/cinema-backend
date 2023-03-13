@@ -32,7 +32,7 @@ tags:
     description: "Информация о профиле пользователя"
 
 paths:
-  /v1/cover:
+  /cover:
     get:
       tags:
         - Cover
@@ -134,7 +134,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/movies/{movieId}/dislike:
+  /movies/{movieId}/dislike:
     post:
       tags:
         - Movie
@@ -188,7 +188,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/history:
+  /history:
     get:
       tags:
         - History
@@ -284,7 +284,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/episodes/{episodeId}/time:
+  /episodes/{episodeId}/time:
     get:
       tags:
         - Episodes
@@ -435,21 +435,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         422:
           $ref: '#/components/responses/RefreshTokenValidationError'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-
-  /auth/logout:
-    post:
-      tags:
-        - Auth
-      summary: "Выход из системы"
-      responses:
-        204:
-          description: "Successful logout"
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-        403:
-          $ref: '#/components/responses/ForbiddenError'
         500:
           $ref: '#/components/responses/InternalServerError'
 
@@ -628,7 +613,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/collections:
+  /collections:
     get:
       tags:
         - Collections
@@ -678,7 +663,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/collections/{collectionId}:
+  /collections/{collectionId}:
     delete:
       tags:
         - Collections
@@ -707,7 +692,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/collections/{collectionId}/movies:
+  /collections/{collectionId}/movies:
     get:
       tags:
         - Collections
@@ -816,7 +801,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v1/preferences:
+  /preferences:
     get:
       tags:
         - Preferences

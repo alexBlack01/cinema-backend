@@ -18,7 +18,8 @@ data class EpisodeBody(
     val director: String,
     val stars: List<@Contextual UUID>,
     val year: Int,
-    val runtime: Int
+    val runtime: Int,
+    val filePath: String
 ) : ValidatedBody<EpisodeBody>() {
     override val validationRule: Validation<EpisodeBody> = Validation {
         EpisodeBody::name required {
@@ -42,6 +43,10 @@ data class EpisodeBody(
         EpisodeBody::runtime required {
             minValue(0)
         }
+        EpisodeBody::filePath required {
+            minLength(length = 1)
+            isNotBlank()
+        }
     }
 
     fun toDomain(movieId: UUID) = EpisodeForm(
@@ -51,6 +56,7 @@ data class EpisodeBody(
         director = director,
         stars = stars,
         year = year,
-        runtime = runtime
+        runtime = runtime,
+        filePath = filePath
     )
 }

@@ -2,9 +2,10 @@ package ru.cinema.data.db.user
 
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.mapLazy
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.deleteWhere
 import ru.cinema.data.db.common.extensions.DatabaseDataSource
 import ru.cinema.data.db.user.model.UserEntity
 import ru.cinema.data.db.user.model.UserTable
@@ -17,6 +18,7 @@ import ru.cinema.domain.user.model.UserProfile
 import ru.cinema.domain.user.roles.model.UserRole
 import java.util.*
 
+@Suppress("TooManyFunctions")
 class UserDbDataSourceImpl(
     override val db: Database
 ) : UserDbDataSource, DatabaseDataSource {
@@ -36,6 +38,12 @@ class UserDbDataSourceImpl(
             .orEmpty()
             .intersect(necessaryRoles)
             .isNotEmpty()
+    }
+
+    override suspend fun getAllUserProfiles(): List<UserProfile> = dbQuery {
+        UserEntity.all()
+            .orderBy(UserTable.lastName to SortOrder.ASC)
+            .map { it.toDomainWithoutPassword() }
     }
 
     override suspend fun getUserById(userId: UUID): UserProfile? = dbQuery {

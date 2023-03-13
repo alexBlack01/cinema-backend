@@ -47,7 +47,7 @@ class ChatControllerImpl(
                 val messages = getMessagesByChatUseCase(userId to chatId).getOrThrow()
 
                 if (messages.isNotEmpty()) {
-                    WebSocketManager.sendAllMessagesInChat(messages, webSocketSession, baseUrl)
+                    WebSocketManager.sendAllMessagesInChat(messages, webSocketSession)
                 }
 
                 webSocketSession.incoming.consumeEach { frame ->
@@ -60,7 +60,7 @@ class ChatControllerImpl(
                             )
                         ).getOrThrow()
 
-                        WebSocketManager.sendMessageToAll(message, chatId, baseUrl)
+                        WebSocketManager.sendMessageToAll(message, chatId)
                     }
                 }
             } finally {

@@ -76,6 +76,8 @@ class InvalidFileSize(override val message: String? = null) : FileFailure()
 
 class InvalidFileName(override val message: String? = null) : FileFailure()
 
+class UploadFileFailure(override val message: String? = null) : FileFailure()
+
 // endregion
 
 // region Chat errors

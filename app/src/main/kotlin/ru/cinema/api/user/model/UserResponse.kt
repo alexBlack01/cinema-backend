@@ -17,12 +17,12 @@ data class UserResponse(
 ) {
 
     companion object {
-        fun fromDomain(data: UserProfile, baseUrl: String, uploadFolder: String, folderUrl: String) = UserResponse(
+        fun fromDomain(data: UserProfile) = UserResponse(
             userId = data.id,
             email = data.email,
             firstName = data.firstName,
             lastName = data.lastName,
-            avatar = data.avatar?.toResourceUrl(baseUrl, uploadFolder, folderUrl)
+            avatar = data.avatar?.toResourceUrl()
         )
     }
 }

@@ -48,27 +48,13 @@ object SystemEnvVariablesUtil {
 
     // endregion
 
-    // region Upload Files
+    // region Uploadcare client
 
-    private const val KEY_UPLOAD_FOLDER = "UPLOAD_FOLDER"
-    private const val KEY_AVATAR_FOLDER = "AVATAR_FOLDER"
-    private const val KEY_POSTER_FOLDER = "POSTER_FOLDER"
-    private const val KEY_MOVIE_IMAGE_FOLDER = "MOVIE_IMAGE_FOLDER"
-    private const val KEY_BACKGROUND_IMAGE_FOLDER = "BACKGROUND_IMAGE_FOLDER"
-    private const val KEY_FOREGROUND_IMAGE_FOLDER = "FOREGROUND_IMAGE_FOLDER"
-    private const val KEY_EPISODE_IMAGE_FOLDER = "EPISODE_IMAGE_FOLDER"
-    private const val KEY_PREVIEW_FOLDER = "PREVIEW_FOLDER"
-    private const val KEY_FILE_FOLDER = "FILE_FOLDER"
+    private const val KEY_PUBLIC_KEY = "PUBLIC_KEY"
+    private const val KEY_PRIVATE_KEY = "PRIVATE_KEY"
 
-    val uploadFolder: String get() = System.getenv(KEY_UPLOAD_FOLDER)
-    val avatarFolder: String get() = System.getenv(KEY_AVATAR_FOLDER)
-    val posterFolder: String get() = System.getenv(KEY_POSTER_FOLDER)
-    val movieImageFolder: String get() = System.getenv(KEY_MOVIE_IMAGE_FOLDER)
-    val backgroundImageFolder: String get() = System.getenv(KEY_BACKGROUND_IMAGE_FOLDER)
-    val foregroundImageFolder: String get() = System.getenv(KEY_FOREGROUND_IMAGE_FOLDER)
-    val episodeImageFolder: String get() = System.getenv(KEY_EPISODE_IMAGE_FOLDER)
-    val previewFolder: String get() = System.getenv(KEY_PREVIEW_FOLDER)
-    val fileFolder: String get() = System.getenv(KEY_FILE_FOLDER)
+    val publicKey: String get() = System.getenv(KEY_PUBLIC_KEY)
+    val privateKey: String get() = System.getenv(KEY_PRIVATE_KEY)
 
     // endregion
 

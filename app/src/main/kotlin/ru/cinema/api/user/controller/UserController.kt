@@ -8,6 +8,8 @@ import java.util.*
 interface UserController {
     suspend fun getUserProfile(userId: UUID): UserProfile
 
+    suspend fun getAllUserProfiles(): List<UserProfile>
+
     suspend fun postAvatarByUserId(userId: UUID, avatar: MultiPartData)
 
     suspend fun patchUserProfile(userId: UUID, userProfileBody: UserProfileBody): UserProfile

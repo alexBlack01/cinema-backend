@@ -36,10 +36,11 @@ class EpisodeDbDataSourceImpl(
         val episode = EpisodeEntity.new {
             this.name = episodeData.name
             this.description = episodeData.description
-            this.movieId = MovieEntity[movieId].id
+            this.movieId = MovieEntity[episodeData.movieId].id
             this.director = episodeData.director
             this.year = episodeData.year.toString()
             this.runtime = episodeData.runtime.toString()
+            this.filePath = episodeData.filePath
         }
 
         episodeData.stars.forEach { starId ->
@@ -57,13 +58,11 @@ class EpisodeDbDataSourceImpl(
     override suspend fun insertEpisodeFiles(
         episodeId: UUID,
         images: List<String>,
-        preview: String?,
-        filePath: String?
+        preview: String?
     ) {
         val episode = EpisodeEntity.findById(episodeId)
 
         episode?.preview = preview
-        episode?.filePath = filePath
 
         images.forEach { imageName ->
             EpisodeImageEntity.new {
@@ -89,6 +88,9 @@ class EpisodeDbDataSourceImpl(
             }
             editEpisodeForm.runtime?.let { runtime ->
                 this.runtime = runtime.toString()
+            }
+            editEpisodeForm.filePath?.let { filePath ->
+                this.filePath = filePath
             }
         }
 

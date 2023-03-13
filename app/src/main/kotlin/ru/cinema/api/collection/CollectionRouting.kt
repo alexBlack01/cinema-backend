@@ -1,6 +1,5 @@
 package ru.cinema.api.collection
 
-import io.ktor.server.application.application
 import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
@@ -17,13 +16,11 @@ import ru.cinema.api.collection.route.Collection
 import ru.cinema.api.collection.route.CollectionMovie
 import ru.cinema.api.collection.route.DeleteCollection
 import ru.cinema.api.collection.route.DeleteCollectionMovie
-import ru.cinema.api.common.extensions.getBaseUrl
 import ru.cinema.api.common.extensions.principalOrThrow
 import ru.cinema.api.common.extensions.respondSuccess
 import ru.cinema.api.common.extensions.respondSuccessCreated
 import ru.cinema.api.common.extensions.respondSuccessNoContent
 import ru.cinema.api.movie.model.MovieResponse
-import ru.cinema.app.common.utils.SystemEnvVariablesUtil
 import ru.cinema.auth.model.AuthConstants
 import ru.cinema.auth.model.UserPrincipal
 
@@ -65,13 +62,7 @@ fun Route.configureCollectionsRouting() {
 
             call.respondSuccess(
                 controller.getMoviesByCollection(userId, param.collectionId).map {
-                    MovieResponse.fromDomain(
-                        data = it,
-                        baseUrl = application.getBaseUrl(),
-                        uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                        movieImageFolder = SystemEnvVariablesUtil.movieImageFolder,
-                        posterFolder = SystemEnvVariablesUtil.posterFolder
-                    )
+                    MovieResponse.fromDomain(it)
                 }
             )
         }

@@ -14,8 +14,7 @@ interface EpisodeDbDataSource {
     suspend fun insertEpisodeFiles(
         episodeId: UUID,
         images: List<String>,
-        preview: String?,
-        filePath: String?
+        preview: String?
     )
     suspend fun editEpisode(editEpisodeForm: EditEpisodeForm): Episode?
     suspend fun deleteEpisodeById(movieId: UUID, episodeId: UUID)

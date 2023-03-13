@@ -33,6 +33,7 @@ fun Route.configureTagsRouting() {
         getAllTagsRequest = controller::getAllTags
     )
     tagAdmin(
+        getAllTagsRequest = controller::getAllTags,
         createTagRequest = controller::postNewTag,
         patchTagInfoRequest = controller::patchTagById,
         deleteTagRequest = controller::deleteTagById
@@ -50,11 +51,16 @@ private fun Route.tagUser(
 }
 
 private fun Route.tagAdmin(
+    getAllTagsRequest: suspend () -> List<Tag>,
     createTagRequest: suspend (TagBody) -> Tag,
     patchTagInfoRequest: suspend (UUID, TagEditBody) -> Tag,
     deleteTagRequest: suspend (UUID) -> Unit
 ) = admin {
     authenticate(AuthConstants.ADMIN_AUTH) {
+        get<Tags> {
+            call.respondSuccess(getAllTagsRequest.invoke().map { TagResponse.fromDomain(it) })
+        }
+
         post<NewTag> {
             verifyRoles(setOf(UserRole.ADMIN))
             val body = call.receive<TagBody>()

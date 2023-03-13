@@ -7,10 +7,9 @@ import ru.cinema.domain.movie.model.ContentForm
 
 object ContentUtils {
 
-    fun createContentForm(part: PartData.FileItem, url: String) =
+    fun createContentForm(part: PartData.FileItem) =
         ContentForm(
             fileBytes = part.streamProvider().readBytes(),
-            fileType = part.contentType?.contentSubtype ?: throw InvalidFileType(),
-            filePath = url
+            fileType = part.contentType?.contentSubtype ?: throw InvalidFileType()
         )
 }

@@ -17,6 +17,7 @@ fun Application.configureHTTP() {
 
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.AccessControlAllowOrigin)
+        allowHeader(HttpHeaders.Authorization)
         anyHost()
     }
     install(DefaultHeaders) {

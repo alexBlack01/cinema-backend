@@ -19,21 +19,14 @@ data class MovieResponse(
     val tags: List<TagResponse>
 ) {
 
-    @Suppress("LongParameterList")
     companion object {
-        fun fromDomain(
-            data: Movie,
-            baseUrl: String,
-            uploadFolder: String,
-            movieImageFolder: String,
-            posterFolder: String
-        ) = MovieResponse(
+        fun fromDomain(data: Movie) = MovieResponse(
             movieId = data.movieId,
             name = data.name,
             description = data.description,
             age = data.age,
-            imageUrls = data.imageUrls.map { it.toResourceUrl(baseUrl, uploadFolder, movieImageFolder) },
-            poster = data.poster?.toResourceUrl(baseUrl, uploadFolder, posterFolder),
+            imageUrls = data.imageUrls.map { it.toResourceUrl() },
+            poster = data.poster?.toResourceUrl(),
             tags = data.tags.map { TagResponse.fromDomain(it) }
         )
     }

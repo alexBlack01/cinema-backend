@@ -7,6 +7,10 @@ import java.util.*
 
 @Serializable
 @Resource("movies")
+class AllMovies
+
+@Serializable
+@Resource("movies")
 class NewMovie
 
 @Serializable

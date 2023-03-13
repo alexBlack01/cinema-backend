@@ -1,7 +1,6 @@
 package ru.cinema.api.movie
 
 import io.ktor.http.content.MultiPartData
-import io.ktor.server.application.application
 import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
@@ -14,7 +13,6 @@ import io.ktor.server.resources.put
 import io.ktor.server.routing.Route
 import org.koin.ktor.ext.inject
 import ru.cinema.api.common.extensions.admin
-import ru.cinema.api.common.extensions.getBaseUrl
 import ru.cinema.api.common.extensions.principalOrThrow
 import ru.cinema.api.common.extensions.respondSuccess
 import ru.cinema.api.common.extensions.respondSuccessCreated
@@ -25,12 +23,12 @@ import ru.cinema.api.movie.controller.MovieController
 import ru.cinema.api.movie.model.MovieBody
 import ru.cinema.api.movie.model.MovieEditBody
 import ru.cinema.api.movie.model.MovieResponse
-import ru.cinema.api.movie.route.Dislike
+import ru.cinema.api.movie.route.AllMovies
 import ru.cinema.api.movie.route.MovieImage
-import ru.cinema.api.movie.route.Movies
-import ru.cinema.api.movie.route.NewMovie
 import ru.cinema.api.movie.route.UpdateMovie
-import ru.cinema.app.common.utils.SystemEnvVariablesUtil
+import ru.cinema.api.movie.route.Movies
+import ru.cinema.api.movie.route.Dislike
+import ru.cinema.api.movie.route.NewMovie
 import ru.cinema.auth.model.AuthConstants
 import ru.cinema.auth.model.UserPrincipal
 import ru.cinema.domain.movie.model.Movie
@@ -42,10 +40,11 @@ fun Route.configureMoviesRouting() {
     val controller by inject<MovieController>()
 
     movieUser(
-        getMoviesByFilter = controller::getAllMovies,
+        getMoviesByFilter = controller::getMoviesByFilter,
         postDislike = controller::postDislikeByUser
     )
     movieAdmin(
+        getAllMovies = controller::getAllMovies,
         createMovieRequest = controller::postNewMovie,
         putMovieContentRequest = controller::insertImagesForMovie,
         patchMovieInfoRequest = controller::patchMovieById,
@@ -66,13 +65,7 @@ private fun Route.movieUser(
                     userId,
                     params.movieType.toDomain()
                 ).map {
-                    MovieResponse.fromDomain(
-                        data = it,
-                        baseUrl = application.getBaseUrl(),
-                        uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                        movieImageFolder = SystemEnvVariablesUtil.movieImageFolder,
-                        posterFolder = SystemEnvVariablesUtil.posterFolder
-                    )
+                    MovieResponse.fromDomain(it)
                 }
             )
         }
@@ -87,25 +80,28 @@ private fun Route.movieUser(
 }
 
 private fun Route.movieAdmin(
+    getAllMovies: suspend () -> List<Movie>,
     createMovieRequest: suspend (MovieBody) -> Movie,
     putMovieContentRequest: suspend (UUID, MultiPartData) -> Unit,
     patchMovieInfoRequest: suspend (UUID, MovieEditBody) -> Movie,
     deleteMovieRequest: suspend (UUID) -> Unit
 ) = admin {
     authenticate(AuthConstants.ADMIN_AUTH) {
+        get<AllMovies> {
+            call.respondSuccess(
+                getAllMovies.invoke().map {
+                    MovieResponse.fromDomain(it)
+                }
+            )
+        }
+
         post<NewMovie> {
             verifyRoles(setOf(UserRole.ADMIN))
             val body = call.receive<MovieBody>()
 
             val movie = createMovieRequest.invoke(body)
             call.respondSuccess(
-                MovieResponse.fromDomain(
-                    data = movie,
-                    baseUrl = application.getBaseUrl(),
-                    uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                    movieImageFolder = SystemEnvVariablesUtil.movieImageFolder,
-                    posterFolder = SystemEnvVariablesUtil.posterFolder
-                )
+                MovieResponse.fromDomain(movie)
             )
         }
 
@@ -123,13 +119,7 @@ private fun Route.movieAdmin(
 
             val movie = patchMovieInfoRequest.invoke(param.movieId, body)
             call.respondSuccess(
-                MovieResponse.fromDomain(
-                    data = movie,
-                    baseUrl = application.getBaseUrl(),
-                    uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                    movieImageFolder = SystemEnvVariablesUtil.movieImageFolder,
-                    posterFolder = SystemEnvVariablesUtil.posterFolder
-                )
+                MovieResponse.fromDomain(movie)
             )
         }
 

@@ -1,17 +1,18 @@
 package ru.cinema.domain.episode
 
 import ru.cinema.domain.common.error.EpisodeNotFound
+import ru.cinema.domain.common.error.UploadFileFailure
 import ru.cinema.domain.common.usecase.UseCase
 import ru.cinema.domain.common.utils.ImageUtils
 import ru.cinema.domain.episode.model.EpisodeContentForm
-import ru.cinema.domain.image.ImageLocalDataSource
+import ru.cinema.domain.image.ImageNetworkDataSource
 import ru.cinema.domain.movie.model.ContentForm
 
 interface PutEpisodeFilesUseCase : UseCase<EpisodeContentForm, Unit>
 
 class PutEpisodeFilesUseCaseImpl(
     private val episodeDbDataSource: EpisodeDbDataSource,
-    private val imageLocalDataSource: ImageLocalDataSource
+    private val imageNetworkDataSource: ImageNetworkDataSource
 ) : PutEpisodeFilesUseCase {
 
     override suspend fun execute(param: EpisodeContentForm): Result<Unit> {
@@ -29,16 +30,14 @@ class PutEpisodeFilesUseCaseImpl(
                 saveFilesInLocalDataSource(image)
             )
         }
-        val fileName: String? = filePath?.let { saveFilesInLocalDataSource(it) }
 
-        episodeDbDataSource.insertEpisodeFiles(episodeId, imageNames, previewName, fileName)
+        episodeDbDataSource.insertEpisodeFiles(episodeId, imageNames, previewName)
     }
 
     private suspend fun saveFilesInLocalDataSource(content: ContentForm): String {
         val name = ImageUtils.generateFileName(content.fileType)
 
-        imageLocalDataSource.saveImage(content.fileBytes, content.filePath, name)
-
-        return name
+        return imageNetworkDataSource.uploadFileToUploadcare(content.fileBytes, name)
+            ?: throw UploadFileFailure()
     }
 }

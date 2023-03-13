@@ -6,6 +6,5 @@ import java.util.*
 data class EpisodeContentForm(
     val episodeId: UUID,
     val images: List<ContentForm>,
-    val preview: ContentForm?,
-    val filePath: ContentForm?
+    val preview: ContentForm?
 )

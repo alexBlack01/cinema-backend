@@ -8,5 +8,9 @@ import ru.cinema.api.common.serializations.UUIDSerializer
 import java.util.UUID
 
 @Serializable
+@Resource("profiles")
+class Profiles
+
+@Serializable
 @Resource("profile/{userId}")
 class DeleteProfile(@Serializable(with = UUIDSerializer::class) val userId: UUID)

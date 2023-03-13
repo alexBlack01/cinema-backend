@@ -4,7 +4,6 @@ import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import ru.cinema.api.common.utils.ContentUtils
-import ru.cinema.api.common.utils.FileUrlUtils
 import ru.cinema.api.common.validation.isValidateImage
 import ru.cinema.api.movie.model.MovieBody
 import ru.cinema.api.movie.model.MovieEditBody
@@ -12,30 +11,34 @@ import ru.cinema.api.movie.model.request.ContentTypeDto
 import ru.cinema.api.movie.model.request.toValidateEnumType
 import ru.cinema.domain.common.error.InvalidFileName
 import ru.cinema.domain.dislike.PostDislikeByUserUseCase
-import ru.cinema.domain.movie.DeleteMovieUseCase
-import ru.cinema.domain.movie.GetAllMoviesUseCase
 import ru.cinema.domain.movie.PatchMovieUseCase
-import ru.cinema.domain.movie.PostMovieUseCase
 import ru.cinema.domain.movie.PutMovieImagesUseCase
+import ru.cinema.domain.movie.DeleteMovieUseCase
+import ru.cinema.domain.movie.PostMovieUseCase
+import ru.cinema.domain.movie.GetMoviesByFilterUseCase
+import ru.cinema.domain.movie.GetAllMoviesUseCase
 import ru.cinema.domain.movie.model.ContentForm
 import ru.cinema.domain.movie.model.Movie
 import ru.cinema.domain.movie.model.MovieContentForm
-import ru.cinema.domain.movie.model.MovieContentType
 import ru.cinema.domain.movie.model.MovieType
 import java.util.*
 
 @Suppress("LongParameterList")
 class MovieControllerImpl(
     private val getAllMoviesUseCase: GetAllMoviesUseCase,
+    private val getMoviesByFilterUseCase: GetMoviesByFilterUseCase,
     private val postMovieUseCase: PostMovieUseCase,
     private val putMovieImagesUseCase: PutMovieImagesUseCase,
     private val patchMovieUseCase: PatchMovieUseCase,
     private val deleteMovieUseCase: DeleteMovieUseCase,
     private val postDislikeByUserUseCase: PostDislikeByUserUseCase
 ) : MovieController {
+    override suspend fun getAllMovies(): List<Movie> {
+        return getAllMoviesUseCase().getOrThrow()
+    }
 
-    override suspend fun getAllMovies(userId: UUID, movieType: MovieType): List<Movie> {
-        return getAllMoviesUseCase(userId to movieType).getOrThrow()
+    override suspend fun getMoviesByFilter(userId: UUID, movieType: MovieType): List<Movie> {
+        return getMoviesByFilterUseCase(userId to movieType).getOrThrow()
     }
 
     override suspend fun postNewMovie(movieData: MovieBody): Movie {
@@ -53,33 +56,21 @@ class MovieControllerImpl(
                 when (part.name?.toValidateEnumType()) {
                     ContentTypeDto.POSTER -> {
                         posterBytes =
-                            ContentUtils.createContentForm(
-                                part,
-                                FileUrlUtils.getUrlForMovieContent(MovieContentType.POSTER)
-                            ).apply { isValidateImage() }
+                            ContentUtils.createContentForm(part).apply { isValidateImage() }
                     }
 
                     ContentTypeDto.IMAGES -> {
                         imagesBytes.add(
-                            ContentUtils.createContentForm(
-                                part,
-                                FileUrlUtils.getUrlForMovieContent(MovieContentType.IMAGES)
-                            ).apply { isValidateImage() }
+                            ContentUtils.createContentForm(part).apply { isValidateImage() }
                         )
                     }
 
                     ContentTypeDto.BACKGROUND_IMAGE -> {
-                        backgroundImage = ContentUtils.createContentForm(
-                            part,
-                            FileUrlUtils.getUrlForMovieContent(MovieContentType.BACKGROUND_IMAGE)
-                        ).apply { isValidateImage() }
+                        backgroundImage = ContentUtils.createContentForm(part).apply { isValidateImage() }
                     }
 
                     ContentTypeDto.FOREGROUND_IMAGE -> {
-                        foregroundImage = ContentUtils.createContentForm(
-                            part,
-                            FileUrlUtils.getUrlForMovieContent(MovieContentType.FOREGROUND_IMAGE)
-                        ).apply { isValidateImage() }
+                        foregroundImage = ContentUtils.createContentForm(part).apply { isValidateImage() }
                     }
 
                     else -> throw InvalidFileName()

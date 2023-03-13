@@ -21,11 +21,11 @@ data class MessageResponse(
 ) {
 
     companion object {
-        fun fromDomain(data: Message, baseUrl: String, uploadFolder: String, folderUrl: String) = MessageResponse(
+        fun fromDomain(data: Message) = MessageResponse(
             messageId = data.messageId,
             creationDateTime = data.creationDateTime,
             authorName = data.authorName,
-            authorAvatar = data.authorAvatar.toResourceUrl(baseUrl, uploadFolder, folderUrl),
+            authorAvatar = data.authorAvatar.toResourceUrl(),
             text = data.text
         )
     }

@@ -18,7 +18,8 @@ data class EpisodeEditBody(
     val director: String? = null,
     val stars: List<@Contextual UUID>? = null,
     val year: Int? = null,
-    val runtime: Int? = null
+    val runtime: Int? = null,
+    val filePath: String? = null
 ) : ValidatedBody<EpisodeEditBody>() {
     override val validationRule: Validation<EpisodeEditBody> = Validation {
         EpisodeEditBody::name ifPresent {
@@ -42,6 +43,10 @@ data class EpisodeEditBody(
         EpisodeEditBody::runtime ifPresent {
             minValue(0)
         }
+        EpisodeEditBody::filePath ifPresent {
+            minLength(length = 1)
+            isNotBlank()
+        }
     }
 
     fun toDomain(episodeId: UUID) = EditEpisodeForm(
@@ -51,6 +56,7 @@ data class EpisodeEditBody(
         director = director,
         stars = stars,
         year = year,
-        runtime = runtime
+        runtime = runtime,
+        filePath = filePath
     )
 }

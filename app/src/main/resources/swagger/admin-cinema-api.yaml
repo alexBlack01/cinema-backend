@@ -24,6 +24,32 @@ tags:
 
 paths:
   /movies:
+    get:
+      tags:
+        - Movie
+      summary: "Получить список фильмов."
+      description: "Список фильмов для отображения на Главном экране."
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/GetMoviesValidationError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
     post:
       tags:
         - Movie
@@ -514,6 +540,29 @@ paths:
           $ref: '#/components/responses/InternalServerError'
       security: [ ]
 
+  /profiles:
+    get:
+      tags:
+        - Profile
+      summary: "Получить все профили пользователей"
+      responses:
+        200:
+          description: "User data"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /auth/refresh:
     post:
       tags:
@@ -540,21 +589,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         422:
           $ref: '#/components/responses/RefreshTokenValidationError'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-
-  /auth/logout:
-    post:
-      tags:
-        - Auth
-      summary: "Выход из системы"
-      responses:
-        204:
-          description: "Successful logout"
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-        403:
-          $ref: '#/components/responses/ForbiddenError'
         500:
           $ref: '#/components/responses/InternalServerError'
 
@@ -594,6 +628,32 @@ components:
       required:
         - email
         - password
+
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Johnson
+        email:
+          type: string
+          example: john@gmail.com
+        avatar:
+          type: string
+          format: url
+      xml:
+        name: User
+      required:
+        - userId
+        - firstName
+        - lastName
+        - email
 
     AuthTokenPair:
       type: object
@@ -757,6 +817,8 @@ components:
         year:
           type: integer
           example: 2019
+        filePath:
+          type: string
       xml:
         name: EpisodeForm
       required:
@@ -780,10 +842,6 @@ components:
             type: string
             description: "Бинарное представление файла"
             format: binary
-        file:
-          type: string
-          description: "Бинарное представление файла"
-          format: binary
       xml:
         name: EpisodeContentForm
 
@@ -810,6 +868,8 @@ components:
         year:
           type: integer
           example: 2019
+        filePath:
+          type: string
       xml:
         name: EditEpisodeForm
 
@@ -1110,6 +1170,18 @@ components:
               value:
                 code: 'RefreshTokenValidationError'
                 message: 'Invalid token'
+
+    GetMoviesValidationError:
+      description: 'Validation Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            WrongFilterValue:
+              value:
+                code: 'WrongFilterValue'
+                message: 'Invalid filter value'
 
   requestBodies:
     MovieForm:

@@ -7,7 +7,7 @@ create table episodes
     director        varchar(150)     not null,
     "year"          varchar(10)      not null,
     runtime         varchar(50)      not null,
-    preview         varchar(150)     not null,
+    preview         varchar(150)     default null,
     file_path       varchar(150)     not null
 );
 

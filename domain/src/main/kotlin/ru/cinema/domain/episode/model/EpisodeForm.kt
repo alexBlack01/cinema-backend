@@ -9,5 +9,6 @@ data class EpisodeForm(
     val director: String,
     val stars: List<UUID>,
     val year: Int,
-    val runtime: Int
+    val runtime: Int,
+    val filePath: String
 )

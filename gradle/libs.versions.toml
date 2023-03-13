@@ -54,6 +54,14 @@ build-config = "3.1.0"
 # Docker
 docker-java = "7.4.0"
 
+# Google API
+google-api-client = "2.0.0"
+google-oauth = "1.34.1"
+google-api-services = "v3-rev20220815-2.0.0"
+
+# Uploadcare
+uploadcare = "3.5.1"
+
 [libraries]
 
 # Kotlin
@@ -124,6 +132,9 @@ build-config-pluging = { module = "com.github.gmazzo:gradle-buildconfig-plugin",
 
 # Docker
 docker-java-plugin = { module = "com.bmuschko:gradle-docker-plugin", version.ref = "docker-java" }
+
+# Uploadcare client
+uploadcare-client = { module = "com.uploadcare:uploadcare", version.ref = "uploadcare" }
 
 [bundles]
 

@@ -11,15 +11,9 @@ data class CoverResponse(
 ) {
 
     companion object {
-        fun fromDomain(
-            data: Cover,
-            baseUrl: String,
-            uploadFolder: String,
-            backgroundImageFolder: String,
-            foregroundImageFolder: String
-        ) = CoverResponse(
-            backgroundImage = data.backgroundImage?.toResourceUrl(baseUrl, uploadFolder, backgroundImageFolder),
-            foregroundImage = data.foregroundImage?.toResourceUrl(baseUrl, uploadFolder, foregroundImageFolder)
+        fun fromDomain(data: Cover) = CoverResponse(
+            backgroundImage = data.backgroundImage?.toResourceUrl(),
+            foregroundImage = data.foregroundImage?.toResourceUrl()
         )
     }
 }

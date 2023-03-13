@@ -20,11 +20,11 @@ data class CommentResponse(
 ) {
 
     companion object {
-        fun fromDomain(data: Comment, baseUrl: String, uploadFolder: String, folderUrl: String) = CommentResponse(
+        fun fromDomain(data: Comment) = CommentResponse(
             commentId = data.commentId,
             creationDateTime = data.creationDateTime,
             authorName = data.authorName,
-            authorAvatar = data.authorAvatar.toResourceUrl(baseUrl, uploadFolder, folderUrl),
+            authorAvatar = data.authorAvatar.toResourceUrl(),
             text = data.text
         )
     }

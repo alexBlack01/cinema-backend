@@ -21,26 +21,18 @@ data class EpisodeResponse(
     val filePath: String?
 ) {
 
-    @Suppress("LongParameterList")
     companion object {
-        fun fromDomain(
-            data: Episode,
-            baseUrl: String,
-            uploadFolder: String,
-            episodeImageFolder: String,
-            previewFolder: String,
-            fileFolder: String
-        ) = EpisodeResponse(
+        fun fromDomain(data: Episode) = EpisodeResponse(
             episodeId = data.episodeId,
             name = data.name,
             description = data.description,
             director = data.director,
             stars = data.stars,
             year = data.year,
-            images = data.imageUrls.map { it.toResourceUrl(baseUrl, uploadFolder, episodeImageFolder) },
+            images = data.imageUrls.map { it.toResourceUrl() },
             runtime = data.runtime,
-            preview = data.preview?.toResourceUrl(baseUrl, uploadFolder, previewFolder),
-            filePath = data.filePath?.toResourceUrl(baseUrl, uploadFolder, fileFolder)
+            preview = data.preview?.toResourceUrl(),
+            filePath = data.filePath
         )
     }
 }

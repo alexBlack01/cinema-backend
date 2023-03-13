@@ -1,6 +1,5 @@
 package ru.cinema.api.episodecomment
 
-import io.ktor.server.application.application
 import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
@@ -10,7 +9,6 @@ import io.ktor.server.resources.post
 import io.ktor.server.routing.Route
 import org.koin.ktor.ext.inject
 import ru.cinema.api.common.extensions.admin
-import ru.cinema.api.common.extensions.getBaseUrl
 import ru.cinema.api.common.extensions.principalOrThrow
 import ru.cinema.api.common.extensions.respondSuccess
 import ru.cinema.api.common.extensions.respondSuccessNoContent
@@ -23,7 +21,6 @@ import ru.cinema.api.episodecomment.model.CommentResponse
 import ru.cinema.api.episodecomment.route.Comments
 import ru.cinema.api.episodecomment.route.DeleteComment
 import ru.cinema.api.episodecomment.route.PostComment
-import ru.cinema.app.common.utils.SystemEnvVariablesUtil
 import ru.cinema.auth.model.AuthConstants
 import ru.cinema.auth.model.UserPrincipal
 import ru.cinema.domain.episodecomment.model.Comment
@@ -52,12 +49,7 @@ private fun Route.commentUser(
                 getCommentsByEpisodeRequest.invoke(
                     param.episodeId
                 ).map {
-                    CommentResponse.fromDomain(
-                        data = it,
-                        baseUrl = application.getBaseUrl(),
-                        uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                        folderUrl = SystemEnvVariablesUtil.avatarFolder
-                    )
+                    CommentResponse.fromDomain(it)
                 }
             )
         }
@@ -75,12 +67,7 @@ private fun Route.commentUser(
             )
 
             call.respondSuccess(
-                CommentResponse.fromDomain(
-                    data = comment,
-                    baseUrl = application.getBaseUrl(),
-                    uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                    folderUrl = SystemEnvVariablesUtil.avatarFolder
-                )
+                CommentResponse.fromDomain(comment)
             )
         }
     }

@@ -17,7 +17,7 @@ import ru.cinema.data.db.tag.TagDbDataSourceImpl
 import ru.cinema.data.db.token.AuthTokenDbDataSourceImpl
 import ru.cinema.data.db.user.UserDbDataSourceImpl
 import ru.cinema.data.db.userhistory.EpisodeTimeDbDataSourceImpl
-import ru.cinema.data.local.image.ImageLocalDataSourceImpl
+import ru.cinema.data.net.image.ImageNetworkDataSourceImpl
 import ru.cinema.domain.auth.token.AuthTokenDbDataSource
 import ru.cinema.domain.chat.ChatDbDataSource
 import ru.cinema.domain.collection.CollectionDbDataSource
@@ -28,7 +28,7 @@ import ru.cinema.domain.episode.EpisodeDbDataSource
 import ru.cinema.domain.episodecomment.CommentDbDataSource
 import ru.cinema.domain.episodetime.EpisodeTimeDbDataSource
 import ru.cinema.domain.image.AvatarDbDataSource
-import ru.cinema.domain.image.ImageLocalDataSource
+import ru.cinema.domain.image.ImageNetworkDataSource
 import ru.cinema.domain.movie.MovieDbDataSource
 import ru.cinema.domain.preference.PreferenceDbDataSource
 import ru.cinema.domain.tag.TagDbDataSource
@@ -42,7 +42,6 @@ object DataSourceModule {
         factoryOf(::UserDbDataSourceImpl) bind UserDbDataSource::class
         factoryOf(::AuthTokenDbDataSourceImpl) bind AuthTokenDbDataSource::class
         factoryOf(::AvatarDbDataSourceImpl) bind AvatarDbDataSource::class
-        factoryOf(::ImageLocalDataSourceImpl) bind ImageLocalDataSource::class
         factoryOf(::PreferenceDbDataSourceImpl) bind PreferenceDbDataSource::class
         factoryOf(::CollectionDbDataSourceImpl) bind CollectionDbDataSource::class
         factoryOf(::CollectionMovieDbDataSourceImpl) bind CollectionMovieDbDataSource::class
@@ -51,5 +50,11 @@ object DataSourceModule {
         factoryOf(::EpisodeDbDataSourceImpl) bind EpisodeDbDataSource::class
         factoryOf(::DislikeDbDataSourceImpl) bind DislikeDbDataSource::class
         factoryOf(::ChatDbDataSourceImpl) bind ChatDbDataSource::class
+
+        factory<ImageNetworkDataSource> {
+            ImageNetworkDataSourceImpl(
+                mediaService = get()
+            )
+        }
     }
 }

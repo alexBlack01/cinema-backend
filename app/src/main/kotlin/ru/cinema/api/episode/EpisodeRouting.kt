@@ -1,7 +1,6 @@
 package ru.cinema.api.episode
 
 import io.ktor.http.content.MultiPartData
-import io.ktor.server.application.application
 import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
@@ -14,7 +13,6 @@ import io.ktor.server.resources.put
 import io.ktor.server.routing.Route
 import org.koin.ktor.ext.inject
 import ru.cinema.api.common.extensions.admin
-import ru.cinema.api.common.extensions.getBaseUrl
 import ru.cinema.api.common.extensions.respondSuccess
 import ru.cinema.api.common.extensions.respondSuccessNoContent
 import ru.cinema.api.common.extensions.user
@@ -27,7 +25,6 @@ import ru.cinema.api.episode.route.EpisodeFile
 import ru.cinema.api.episode.route.Episodes
 import ru.cinema.api.episode.route.NewEpisode
 import ru.cinema.api.episode.route.UpdateEpisode
-import ru.cinema.app.common.utils.SystemEnvVariablesUtil
 import ru.cinema.auth.model.AuthConstants
 import ru.cinema.domain.episode.model.Episode
 import ru.cinema.domain.user.roles.model.UserRole
@@ -56,14 +53,7 @@ private fun Route.episodeUser(
                 getEpisodesByMovie.invoke(
                     params.movieId
                 ).map {
-                    EpisodeResponse.fromDomain(
-                        data = it,
-                        baseUrl = application.getBaseUrl(),
-                        uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                        episodeImageFolder = SystemEnvVariablesUtil.episodeImageFolder,
-                        previewFolder = SystemEnvVariablesUtil.previewFolder,
-                        fileFolder = SystemEnvVariablesUtil.fileFolder
-                    )
+                    EpisodeResponse.fromDomain(it)
                 }
             )
         }
@@ -83,14 +73,7 @@ private fun Route.episodeAdmin(
 
             val episode = createEpisodeRequest.invoke(param.movieId, body)
             call.respondSuccess(
-                EpisodeResponse.fromDomain(
-                    data = episode,
-                    baseUrl = application.getBaseUrl(),
-                    uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                    episodeImageFolder = SystemEnvVariablesUtil.episodeImageFolder,
-                    previewFolder = SystemEnvVariablesUtil.previewFolder,
-                    fileFolder = SystemEnvVariablesUtil.fileFolder
-                )
+                EpisodeResponse.fromDomain(episode)
             )
         }
 
@@ -108,14 +91,7 @@ private fun Route.episodeAdmin(
 
             val episode = patchEpisodeInfoRequest.invoke(param.movieId, param.episodeId, body)
             call.respondSuccess(
-                EpisodeResponse.fromDomain(
-                    data = episode,
-                    baseUrl = application.getBaseUrl(),
-                    uploadFolder = SystemEnvVariablesUtil.uploadFolder,
-                    episodeImageFolder = SystemEnvVariablesUtil.episodeImageFolder,
-                    previewFolder = SystemEnvVariablesUtil.previewFolder,
-                    fileFolder = SystemEnvVariablesUtil.fileFolder
-                )
+                EpisodeResponse.fromDomain(episode)
             )
         }
 

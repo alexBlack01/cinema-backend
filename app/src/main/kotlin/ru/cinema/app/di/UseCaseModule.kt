@@ -56,10 +56,12 @@ import ru.cinema.domain.episodetime.GetHistoryByUserUseCase
 import ru.cinema.domain.episodetime.GetHistoryByUserUseCaseImpl
 import ru.cinema.domain.episodetime.PostEpisodeTimeByUserUseCase
 import ru.cinema.domain.episodetime.PostEpisodeTimeByUserUseCaseImpl
-import ru.cinema.domain.movie.DeleteMovieUseCase
-import ru.cinema.domain.movie.DeleteMovieUseCaseImpl
 import ru.cinema.domain.movie.GetAllMoviesUseCase
 import ru.cinema.domain.movie.GetAllMoviesUseCaseImpl
+import ru.cinema.domain.movie.GetMoviesByFilterUseCaseImpl
+import ru.cinema.domain.movie.GetMoviesByFilterUseCase
+import ru.cinema.domain.movie.DeleteMovieUseCase
+import ru.cinema.domain.movie.DeleteMovieUseCaseImpl
 import ru.cinema.domain.movie.PatchMovieUseCase
 import ru.cinema.domain.movie.PatchMovieUseCaseImpl
 import ru.cinema.domain.movie.PostMovieUseCase
@@ -78,14 +80,16 @@ import ru.cinema.domain.tag.PatchTagUseCase
 import ru.cinema.domain.tag.PatchTagUseCaseImpl
 import ru.cinema.domain.tag.PostTagUseCase
 import ru.cinema.domain.tag.PostTagUseCaseImpl
-import ru.cinema.domain.user.DeleteUserByAdminUseCase
-import ru.cinema.domain.user.DeleteUserByAdminUseCaseImpl
-import ru.cinema.domain.user.GetUserUseCase
-import ru.cinema.domain.user.GetUserUseCaseImpl
-import ru.cinema.domain.user.PatchUserUseCase
-import ru.cinema.domain.user.PatchUserUseCaseImpl
+import ru.cinema.domain.user.GetAllUsersUseCase
 import ru.cinema.domain.user.PostAvatarByUserIdUseCase
+import ru.cinema.domain.user.GetUserUseCase
+import ru.cinema.domain.user.DeleteUserByAdminUseCase
+import ru.cinema.domain.user.PatchUserUseCase
+import ru.cinema.domain.user.GetAllUsersUseCaseImpl
+import ru.cinema.domain.user.DeleteUserByAdminUseCaseImpl
+import ru.cinema.domain.user.PatchUserUseCaseImpl
 import ru.cinema.domain.user.PostAvatarByUserIdUseCaseImpl
+import ru.cinema.domain.user.GetUserUseCaseImpl
 
 object UseCaseModule {
     const val REGISTER_USER_USE_CASE = "REGISTER_USER_USE_CASE"
@@ -95,6 +99,7 @@ object UseCaseModule {
     const val REFRESH_TOKEN_ADMIN_USE_CASE = "REFRESH_TOKEN_ADMIN_USE_CASE"
 
     val module = module {
+        factoryOf(::GetMoviesByFilterUseCaseImpl) bind GetMoviesByFilterUseCase::class
         factoryOf(::GetAllMoviesUseCaseImpl) bind GetAllMoviesUseCase::class
         factoryOf(::GetAllTagsUseCaseImpl) bind GetAllTagsUseCase::class
         factoryOf(::GetEpisodesByMovieUseCaseImpl) bind GetEpisodesByMovieUseCase::class
@@ -134,6 +139,7 @@ object UseCaseModule {
         factoryOf(::PostEpisodeByMovieUseCaseImpl) bind PostEpisodeByMovieUseCase::class
         factoryOf(::PatchEpisodeUseCaseImpl) bind PatchEpisodeUseCase::class
         factoryOf(::PutEpisodeFilesUseCaseImpl) bind PutEpisodeFilesUseCase::class
+        factoryOf(::GetAllUsersUseCaseImpl) bind GetAllUsersUseCase::class
 
         factory<RegisterViaEmailUseCase>(named(REGISTER_USER_USE_CASE)) {
             RegisterViaEmailUseCaseImpl(

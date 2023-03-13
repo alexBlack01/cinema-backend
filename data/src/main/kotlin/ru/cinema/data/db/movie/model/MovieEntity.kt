@@ -18,6 +18,7 @@ import ru.cinema.data.db.user.model.UserEntity
 import ru.cinema.domain.cover.model.Cover
 import ru.cinema.domain.movie.model.Movie
 import ru.cinema.domain.movie.model.ShortMovieInfo
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -29,7 +30,7 @@ object MovieTable : UUIDTable(name = "movies") {
     val poster = varchar(name = "poster", length = 200).nullable()
     val backgroundImage = varchar(name = "background_image", length = 200).nullable()
     val foregroundImage = varchar(name = "foreground_image", length = 200).nullable()
-    val createdAt = timestamp(name = "created_at")
+    val createdAt = timestamp(name = "created_at").clientDefault { Instant.now() }
     val viewCount = integer(name = "view_count").default(0)
 }
 

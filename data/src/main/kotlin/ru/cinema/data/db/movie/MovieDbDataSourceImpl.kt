@@ -104,7 +104,6 @@ class MovieDbDataSourceImpl(
             this.name = movieData.name
             this.description = movieData.description
             this.age = movieData.age
-            this.createdAt = movieData.createdAt.toInstant(ZoneOffset.UTC)
         }
 
         movieData.tags.forEach { tagId ->

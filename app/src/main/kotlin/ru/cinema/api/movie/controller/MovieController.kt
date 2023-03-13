@@ -8,7 +8,8 @@ import ru.cinema.domain.movie.model.MovieType
 import java.util.UUID
 
 interface MovieController {
-    suspend fun getAllMovies(userId: UUID, movieType: MovieType): List<Movie>
+    suspend fun getAllMovies(): List<Movie>
+    suspend fun getMoviesByFilter(userId: UUID, movieType: MovieType): List<Movie>
     suspend fun postNewMovie(movieData: MovieBody): Movie
     suspend fun insertImagesForMovie(movieId: UUID, images: MultiPartData)
     suspend fun patchMovieById(movieId: UUID, editMovieBody: MovieEditBody): Movie

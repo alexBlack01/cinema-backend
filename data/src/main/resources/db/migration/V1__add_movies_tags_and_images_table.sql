@@ -7,7 +7,7 @@ create table movies
     poster           varchar(200)     default null,
     background_image varchar(200)     default null,
     foreground_image varchar(200)     default null,
-    created_at       varchar(100)     not null,
+    created_at       timestamp        not null            default (now() at time zone 'utc'),
     view_count       integer          default 0
 );
 
